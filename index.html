@@ -461,7 +461,7 @@ function kpis(){
 function updateBadge(){ const d=target>0.5; $('badge').classList.toggle('dream',d); $('badgeTxt').textContent = d?T[lang].badge1:T[lang].badge0; }
 
 /* ---------------- story ---------------- */
-const DUR=[6000,9000,11000,10000,12000];   // ~48 s, plus reading time on the pilot
+const DUR=[6000,9000,13000,10000,12000];   // ~48 s, plus reading time on the pilot
 let step=0, playing=!reduce || kiosk, elapsed=0, free=false, booked=false;
 const sheets={dig:$('shDig'),app:$('shApp'),pilot:$('shPilot')};
 function sheet(name){ Object.entries(sheets).forEach(([k,s])=>{ const on=k===name; s.classList.toggle('open',on); s.setAttribute('aria-hidden',!on); }); }
@@ -480,7 +480,7 @@ function goStep(n){
   openTarget=0; sheet(null); $('maptip').classList.remove('show');
   if (step===0) setScenario(false);
   if (step>=1) setScenario(true);
-  if (step===2){ setTimeout(()=>{ if(step===2&&!free){ openStreet(); setTimeout(()=>{ if(step===2&&!free) sheet('dig'); }, reduce?0:500); } }, reduce?0:900); }
+  if (step===2){ setTimeout(()=>{ if(step===2&&!free){ openStreet(); setTimeout(()=>{ if(step===2&&!free) sheet('dig'); }, reduce?0:(useMap?3800:500)); } }, reduce?0:900); }
   if (step===3) setTimeout(()=>{ if(step===3&&!free) sheet('app'); }, reduce?0:500);
   if (step===4) setTimeout(()=>{ if(step===4&&!free) sheet('pilot'); }, reduce?0:500);
   mapCamera(step);
@@ -521,13 +521,13 @@ cv.addEventListener('click',e=>{
 let useMap=false, map=null;
 const mk={};
 const CAM=[
-  {center:[126.8880,37.4915],zoom:13.8,pitch:55,bearing:-25},
-  {center:[126.8880,37.4915],zoom:14.1,pitch:58,bearing:-8},
-  {center:[126.8975,37.4848],zoom:16.7,pitch:62,bearing:20},
-  {center:[126.8975,37.4848],zoom:16.3,pitch:60,bearing:38},
-  {center:[126.8950,37.4855],zoom:15.2,pitch:55,bearing:5}
-];
-const LMS={stn:[126.9014,37.4852], off:[126.8875,37.4954], hp:[126.8805,37.4893], gv:[126.8950,37.4826]};
+  {center:[126.8890,37.4905],zoom:13.3,pitch:50,bearing:-25},
+  {center:[126.8890,37.4905],zoom:13.6,pitch:55,bearing:-8},
+  {center:[126.8975,37.4848],zoom:15.7,pitch:52,bearing:20},
+  {center:[126.8975,37.4848],zoom:15.4,pitch:52,bearing:38},
+  {center:[126.8950,37.4855],zoom:14.6,pitch:50,bearing:5}
+]
+const LMS={stn:[126.9014,37.4852], off:[126.8875,37.4954], hp:[126.8840,37.4885], gv:[126.8950,37.4826]};
 const COL=d=>['interpolate',['linear'],['coalesce',['get','render_height'],10],
   0, d?'#7cc79a':'#bfc3bf', 30, d?'#3f9e69':'#9a9f9b', 100, d?'#1f6d45':'#767c78'];
 const EMPTY={type:'FeatureCollection',features:[]};
