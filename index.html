@@ -11,6 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <style>
 :root{
   --paper:#eef1ed;      /* app background */
@@ -55,10 +57,19 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 
 .mapbox{position:relative;flex:1 1 auto;min-height:200px;overflow:hidden}
 #city{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:manipulation}
-.badge{position:absolute;left:12px;top:6px;font-size:.72rem;font-weight:600;background:rgba(255,255,255,.9);border-radius:999px;padding:4px 10px}
+#map{position:absolute;inset:0;opacity:0;transition:opacity .6s}
+#map.on{opacity:1}
+#map:not(.on){pointer-events:none;visibility:hidden}
+#haze{position:absolute;inset:0;pointer-events:none;background:linear-gradient(#8a8067,rgba(138,128,103,.25));opacity:.27;transition:opacity 1.2s}
+.lm{font:700 11px "IBM Plex Sans","Noto Sans KR",sans-serif;color:#16201a;background:rgba(255,255,255,.9);padding:3px 8px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.lm.hp{background:#e07a2c;color:#fff}
+.pulse{width:18px;height:18px;border-radius:50%;background:#e07a2c;box-shadow:0 0 0 0 rgba(224,122,44,.6);animation:pl 1.8s infinite}
+@keyframes pl{to{box-shadow:0 0 0 18px rgba(224,122,44,0)}}
+.maplibregl-ctrl-attrib{font-size:9px}
+.badge{position:absolute;z-index:2;left:12px;top:6px;font-size:.72rem;font-weight:600;background:rgba(255,255,255,.9);border-radius:999px;padding:4px 10px}
 .badge i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--concrete,#9aa29d);margin-right:6px;vertical-align:1px}
 .badge.dream i{background:var(--green)}
-.maptip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-size:.74rem;background:rgba(22,32,26,.82);color:#fff;border-radius:999px;padding:5px 12px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.maptip{z-index:2;position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-size:.74rem;background:rgba(22,32,26,.82);color:#fff;border-radius:999px;padding:5px 12px;white-space:nowrap;opacity:0;transition:opacity .3s}
 .maptip.show{opacity:1}
 
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px 12px}
@@ -136,6 +147,8 @@ html.kiosk .lang, html.kiosk .ctrls{display:none}
 
   <div class="mapbox">
     <canvas id="city" aria-label="Schematic isometric map of Guro-gu"></canvas>
+    <div id="map" aria-label="Map of Guro-gu, Seoul"></div>
+    <div id="haze"></div>
     <div class="badge" id="badge"><i></i><span id="badgeTxt">2026 · Guro today</span></div>
     <div class="maptip" id="maptip" data-t="tip">Tap a street to open it</div>
   <!-- Dig once -->
@@ -297,7 +310,7 @@ const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: redu
 const T = {
  en:{
   sub:"Guro Twin · KTH Group 6", tip:"Tap a street to open it", kE:"Final energy", kC:"CO₂ emissions", kP:"PM2.5",
-  today:"Today", src:"Map, network and heat pump location are schematic. KPIs: Guro Goes Green final report (KTH, 2026), Dare to Dream scenario.",
+  today:"Today", src:"Real map: © OpenStreetMap. Heat network, chargers and heat pump location are schematic. KPIs: Guro Goes Green final report (KTH, 2026), Dare to Dream scenario.",
   badge0:"2026 · Guro today", badge1:"2035 · Dare to Dream",
   play:"Play", pause:"Pause", replay:"Replay",
   close:"Close", digK:"Dig once", digH:"One excavation, two networks",
@@ -324,7 +337,7 @@ const T = {
  },
  ko:{
   sub:"구로 트윈 · KTH 6조", tip:"거리를 눌러 열어보세요", kE:"최종 에너지", kC:"CO₂ 배출량", kP:"초미세먼지",
-  today:"현재", src:"지도, 배관망, 히트펌프 위치는 개략도입니다. 지표 수치: Guro Goes Green 최종 보고서(KTH, 2026), Dare to Dream 시나리오.",
+  today:"현재", src:"지도: © OpenStreetMap. 배관망, 충전기, 히트펌프 위치는 개략도입니다. 지표 수치: Guro Goes Green 최종 보고서(KTH, 2026), Dare to Dream 시나리오.",
   badge0:"2026 · 오늘의 구로", badge1:"2035 · Dare to Dream",
   play:"재생", pause:"일시정지", replay:"다시 보기",
   close:"닫기", digK:"굴착은 한 번", digH:"한 번의 굴착, 두 개의 네트워크",
@@ -362,6 +375,7 @@ function applyLang(){
   document.querySelectorAll('[data-t]').forEach(el=>{ const v = T[lang][el.getAttribute('data-t')]; if (v!=null) el.textContent = v; });
   renderStep(); updateBadge();
   if (booked) $('bBook').textContent = T[lang].a7done;
+  if (typeof mapLabels==='function') mapLabels();
 }
 
 /* ---------------- city ---------------- */
@@ -451,7 +465,7 @@ const DUR=[6000,9000,11000,10000,12000];   // ~48 s, plus reading time on the pi
 let step=0, playing=!reduce || kiosk, elapsed=0, free=false, booked=false;
 const sheets={dig:$('shDig'),app:$('shApp'),pilot:$('shPilot')};
 function sheet(name){ Object.entries(sheets).forEach(([k,s])=>{ const on=k===name; s.classList.toggle('open',on); s.setAttribute('aria-hidden',!on); }); }
-function setScenario(d){ target=d?1:0; $('bToday').setAttribute('aria-pressed',!d); $('bDream').setAttribute('aria-pressed',d); updateBadge(); }
+function setScenario(d){ target=d?1:0; mapScenario(d); $('bToday').setAttribute('aria-pressed',!d); $('bDream').setAttribute('aria-pressed',d); updateBadge(); }
 function openStreet(cell){ tapCell=cell||{i:8,j:6}; openTarget=1; }
 function renderStep(){
   const L=T[lang];
@@ -469,6 +483,7 @@ function goStep(n){
   if (step===2){ setTimeout(()=>{ if(step===2&&!free){ openStreet(); setTimeout(()=>{ if(step===2&&!free) sheet('dig'); }, reduce?0:500); } }, reduce?0:900); }
   if (step===3) setTimeout(()=>{ if(step===3&&!free) sheet('app'); }, reduce?0:500);
   if (step===4) setTimeout(()=>{ if(step===4&&!free) sheet('pilot'); }, reduce?0:500);
+  mapCamera(step);
   renderStep(); progress();
 }
 function progress(){
@@ -476,7 +491,7 @@ function progress(){
     el.style.width = free ? '100%' : k<step ? '100%' : k>step ? '0%' : Math.min(100,elapsed/DUR[step]*100)+'%';
   });
 }
-function goFree(){ free=true; playing=false; sheet(null); openTarget=0; setScenario(true); renderStep(); progress();
+function goFree(){ free=true; playing=false; sheet(null); openTarget=0; selectRoad(null); setScenario(true); if(useMap) map.easeTo({zoom:15,pitch:55,duration:reduce?0:1200}); renderStep(); progress();
   $('maptip').classList.add('show'); setTimeout(()=>$('maptip').classList.remove('show'),4000); }
 
 $('bNext').onclick=()=>{ if(step<4) goStep(step+1); else goFree(); };
@@ -486,7 +501,7 @@ $('bToday').onclick=()=>{ setScenario(false); sheet(null); openTarget=0; };
 $('bDream').onclick=()=>setScenario(true);
 $('bExplore').onclick=goFree;
 $('bBook').onclick=function(){ booked=true; this.textContent=T[lang].a7done; $('pts').textContent='2,490'; };
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{ sheet(null); openTarget=0; if(!free){ playing=false; renderStep(); } });
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{ sheet(null); openTarget=0; selectRoad(null); if(!free){ playing=false; renderStep(); } });
 $('lEN').onclick=()=>{ lang='en'; applyLang(); };
 $('lKO').onclick=()=>{ lang='ko'; applyLang(); };
 
@@ -501,6 +516,94 @@ cv.addEventListener('click',e=>{
   openStreet(cell); setTimeout(()=>sheet('dig'), reduce?0:450);
 });
 
+
+/* ---------------- real map (OpenStreetMap / OpenFreeMap tiles, MapLibre) ---------------- */
+let useMap=false, map=null;
+const mk={};
+const CAM=[
+  {center:[126.8880,37.4915],zoom:13.8,pitch:55,bearing:-25},
+  {center:[126.8880,37.4915],zoom:14.1,pitch:58,bearing:-8},
+  {center:[126.8975,37.4848],zoom:16.7,pitch:62,bearing:20},
+  {center:[126.8975,37.4848],zoom:16.3,pitch:60,bearing:38},
+  {center:[126.8950,37.4855],zoom:15.2,pitch:55,bearing:5}
+];
+const LMS={stn:[126.9014,37.4852], off:[126.8875,37.4954], hp:[126.8805,37.4893], gv:[126.8950,37.4826]};
+const COL=d=>['interpolate',['linear'],['coalesce',['get','render_height'],10],
+  0, d?'#7cc79a':'#bfc3bf', 30, d?'#3f9e69':'#9a9f9b', 100, d?'#1f6d45':'#767c78'];
+const EMPTY={type:'FeatureCollection',features:[]};
+function webgl(){ try{ const c=document.createElement('canvas'); return !!(c.getContext('webgl')||c.getContext('experimental-webgl')); }catch(e){ return false; } }
+function lmEl(cls,key){ const d=document.createElement('div'); d.className='lm '+cls; d.setAttribute('data-k',key); d.textContent=T[lang][key]; return d; }
+function mapLabels(){ document.querySelectorAll('.lm[data-k]').forEach(d=>{ d.textContent=T[lang][d.getAttribute('data-k')]; }); }
+function initMap(){
+  if (!window.maplibregl || !webgl()) return;
+  let ok=false;
+  try{
+    map=new maplibregl.Map(Object.assign({container:'map', style:'https://tiles.openfreemap.org/styles/positron',
+      attributionControl:{compact:true}, maxPitch:70, dragRotate:true, touchPitch:false}, CAM[0]));
+  }catch(e){ map=null; return; }
+  const fail=setTimeout(()=>{ if(!ok){ try{map.remove();}catch(e){} map=null; } },9000);
+  map.on('load',()=>{
+    ok=true; clearTimeout(fail);
+    try{
+      const layers=map.getStyle().layers;
+      layers.forEach(l=>{ if(l['source-layer']==='building') map.setLayoutProperty(l.id,'visibility','none'); });
+      const firstSym=(layers.find(l=>l.type==='symbol')||{}).id;
+      const src=Object.keys(map.getStyle().sources).find(k=>map.getStyle().sources[k].type==='vector')||'openmaptiles';
+      map.addLayer({id:'g3-heat',type:'line',source:src,'source-layer':'transportation',
+        filter:['in',['get','class'],['literal',['trunk','primary','secondary','tertiary']]],
+        layout:{'line-cap':'round','line-join':'round'},
+        paint:{'line-color':'#e07a2c','line-width':['interpolate',['linear'],['zoom'],12,1.5,17,7],'line-dasharray':[2,1.2],
+               'line-opacity':0,'line-opacity-transition':{duration:1500}}}, firstSym);
+      map.addLayer({id:'g3-hit',type:'line',source:src,'source-layer':'transportation',
+        filter:['in',['get','class'],['literal',['trunk','primary','secondary','tertiary','minor','service']]],
+        paint:{'line-color':'#000','line-width':22,'line-opacity':0}});
+      map.addSource('g3-sel',{type:'geojson',data:EMPTY});
+      map.addLayer({id:'g3-sel-trench',type:'line',source:'g3-sel',layout:{'line-cap':'round'},paint:{'line-color':'#a8916d','line-width':16,'line-opacity':.9}});
+      map.addLayer({id:'g3-sel-heat',type:'line',source:'g3-sel',paint:{'line-color':'#e07a2c','line-width':3.5,'line-offset':-3}});
+      map.addLayer({id:'g3-sel-pow',type:'line',source:'g3-sel',paint:{'line-color':'#2b78c9','line-width':3.5,'line-offset':3}});
+      map.addLayer({id:'g3-bld',type:'fill-extrusion',source:src,'source-layer':'building',minzoom:12.5,
+        paint:{'fill-extrusion-color':COL(false),'fill-extrusion-color-transition':{duration:1600},
+               'fill-extrusion-height':['coalesce',['get','render_height'],10],
+               'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.93}}, firstSym);
+      const hp=document.createElement('div'); hp.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px';
+      hp.appendChild(lmEl('hp','lHP')); const pu=document.createElement('div'); pu.className='pulse'; hp.appendChild(pu);
+      mk.hp=new maplibregl.Marker({element:hp,anchor:'bottom'}).setLngLat(LMS.hp).addTo(map);
+      mk.stn=new maplibregl.Marker({element:lmEl('','lStn'),anchor:'bottom'}).setLngLat(LMS.stn).addTo(map);
+      mk.off=new maplibregl.Marker({element:lmEl('','lOff'),anchor:'bottom'}).setLngLat(LMS.off).addTo(map);
+      mk.gv=new maplibregl.Marker({element:lmEl('','lGV'),anchor:'bottom'}).setLngLat(LMS.gv).addTo(map);
+      useMap=true; $('map').classList.add('on'); cv.style.visibility='hidden';
+      mapScenario(target>0.5); if(!free) mapCamera(step,true);
+    }catch(e){ useMap=false; $('map').classList.remove('on'); cv.style.visibility='visible'; }
+  });
+  map.on('click',e=>{
+    if (!free){ playing=false; goFree(); }
+    if (target<1){ setScenario(true); return; }
+    const f=map.queryRenderedFeatures([[e.point.x-14,e.point.y-14],[e.point.x+14,e.point.y+14]],{layers:['g3-hit']});
+    if (!f.length) return;
+    selectRoad(f[0]); setTimeout(()=>sheet('dig'), reduce?0:450);
+  });
+  map.on('dragstart',()=>{ if(!free && playing){ playing=false; renderStep(); } });
+}
+function selectRoad(f){ if(!useMap) return; map.getSource('g3-sel').setData(f?{type:'Feature',geometry:f.geometry,properties:{}}:EMPTY); }
+function mapScenario(d){
+  $('haze').style.opacity = d ? '0.11' : '0.27';
+  if (!useMap) return;
+  map.setPaintProperty('g3-bld','fill-extrusion-color',COL(d));
+  map.setPaintProperty('g3-heat','line-opacity',d?0.95:0);
+  if (mk.hp) mk.hp.getElement().style.visibility = d?'visible':'hidden';
+}
+function mapCamera(n,instant){
+  if (!useMap) return;
+  map.flyTo(Object.assign({}, CAM[n], {duration:(reduce||instant)?0:3200, essential:true}));
+  if (n===2){
+    map.once('moveend',()=>{ if(step!==2||free) return;
+      const c=map.project(map.getCenter());
+      const f=map.queryRenderedFeatures([[c.x-90,c.y-90],[c.x+90,c.y+90]],{layers:['g3-hit']});
+      if (f.length) selectRoad(f.find(x=>['primary','secondary','tertiary'].includes(x.properties.class))||f[0]);
+    });
+  } else selectRoad(null);
+}
+
 /* ---------------- loop ---------------- */
 function loop(ts){
   const dt=Math.min(64, ts-(last||ts)); last=ts; time+=dt;
@@ -510,11 +613,11 @@ function loop(ts){
     elapsed+=dt; progress();
     if (elapsed>=DUR[step]){ if(step<4) goStep(step+1); else if(kiosk) goStep(0); else { playing=false; renderStep(); } }
   }
-  draw(); kpis();
+  if(!useMap) draw(); kpis();
   requestAnimationFrame(loop);
 }
 window.addEventListener('resize', size);
-size(); applyLang(); goStep(0);
+size(); applyLang(); goStep(0); initMap();
 requestAnimationFrame(loop);
 
 /* offline after first load (GitHub Pages only) */
