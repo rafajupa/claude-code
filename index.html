@@ -558,7 +558,7 @@ function initMap(){
         filter:['in',['get','class'],['literal',['trunk','primary','secondary','tertiary','minor','service']]],
         paint:{'line-color':'#000','line-width':22,'line-opacity':0}});
       map.addSource('g3-sel',{type:'geojson',data:EMPTY});
-      map.addLayer({id:'g3-sel-trench',type:'line',source:'g3-sel',layout:{'line-cap':'round'},paint:{'line-color':'#a8916d','line-width':16,'line-opacity':.9}});
+      map.addLayer({id:'g3-sel-trench',type:'line',source:'g3-sel',layout:{'line-cap':'round'},paint:{'line-color':'#a8916d','line-width':['interpolate',['linear'],['zoom'],14,8,17,22],'line-opacity':.9}});
       map.addLayer({id:'g3-sel-heat',type:'line',source:'g3-sel',paint:{'line-color':'#e07a2c','line-width':3.5,'line-offset':-3}});
       map.addLayer({id:'g3-sel-pow',type:'line',source:'g3-sel',paint:{'line-color':'#2b78c9','line-width':3.5,'line-offset':3}});
       map.addLayer({id:'g3-bld',type:'fill-extrusion',source:src,'source-layer':'building',minzoom:12.5,
@@ -598,8 +598,11 @@ function mapCamera(n,instant){
   if (n===2){
     map.once('moveend',()=>{ if(step!==2||free) return;
       const c=map.project(map.getCenter());
-      const f=map.queryRenderedFeatures([[c.x-90,c.y-90],[c.x+90,c.y+90]],{layers:['g3-hit']});
-      if (f.length) selectRoad(f.find(x=>['primary','secondary','tertiary'].includes(x.properties.class))||f[0]);
+      const f=map.queryRenderedFeatures([[c.x-140,c.y-110],[c.x+140,c.y+110]],{layers:['g3-hit']});
+      const len=g=>{ const L=g.type==='MultiLineString'?g.coordinates.flat():g.coordinates; let d=0; for(let k=1;k<L.length;k++) d+=Math.hypot(L[k][0]-L[k-1][0],L[k][1]-L[k-1][1]); return d; };
+      const main=f.filter(x=>['primary','secondary','tertiary'].includes(x.properties.class));
+      const pool=main.length?main:f;
+      if (pool.length) selectRoad(pool.reduce((a,b)=>len(b.geometry)>len(a.geometry)?b:a));
     });
   } else selectRoad(null);
 }
