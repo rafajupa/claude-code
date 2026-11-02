@@ -2,687 +2,525 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guro Twin + Dig Once preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#eef1ed">
+<meta name="description" content="Guro Goes Green: an interactive vision for Guro-gu, Seoul. KTH, Group 6.">
+<meta property="og:title" content="Guro Goes Green · Guro Twin">
+<meta property="og:description" content="One excavation, two networks: a cleaner, warmer Guro by 2035.">
+<title>Guro Goes Green · Guro Twin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#f3f4f1;      /* page background, slightly green-biased grey */
-  --ink:#17201b;        /* text */
-  --muted:#5d6862;      /* secondary text */
-  --line:#d5dad5;       /* hairlines */
-  --green:#2b8a57;      /* Guro green, the accent */
-  --heat:#e07a2c;       /* heat network */
-  --volt:#2b78c9;       /* electricity / EV */
-  --concrete:#9aa29d;   /* today's grey city */
+  --paper:#eef1ed;      /* app background */
+  --ink:#16201a;
+  --muted:#5b665f;
+  --line:#d3d9d3;
   --card:#ffffff;
-  --display:"Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
-  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono:"IBM Plex Mono", ui-monospace, monospace;
-  /* layout: intro, then phone prototype beside its explanation, then cross-section, story strip, poster, questions */
-  color-scheme: light;
+  --green:#2b8a57;      /* Guro green, accent */
+  --heat:#e07a2c;       /* heat network */
+  --volt:#2b78c9;       /* electricity */
+  --display:"Bricolage Grotesque","Noto Sans KR",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Noto Sans KR",system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* layout: one phone-height screen; map on top, story card below; desktop centres it in a device frame */
+  color-scheme:light;
 }
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
-.wrap{max-width:1120px;margin:0 auto;padding:32px 20px 64px}
-h1,h2,h3{font-family:var(--display);line-height:1.1;text-wrap:balance;margin:0}
-h1{font-size:clamp(2rem,4.5vw,3.1rem);font-weight:800;letter-spacing:-.02em}
-h2{font-size:1.7rem;font-weight:700;letter-spacing:-.01em}
-h3{font-size:1.15rem;font-weight:700}
-p{margin:0;max-width:65ch}
-.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--green)}
-.lede{color:var(--muted);font-size:1.08rem;margin-top:12px}
-header{display:grid;gap:10px;padding-bottom:28px;border-bottom:1px solid var(--line)}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.chip{font-size:.82rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card)}
-.chip b{color:var(--green)}
-section{padding:44px 0;border-bottom:1px solid var(--line);display:grid;gap:22px}
-.sec-head{display:grid;gap:8px}
+html[lang="ko"]{--display:"Noto Sans KR",system-ui,sans-serif;--body:"Noto Sans KR",system-ui,sans-serif}
+[hidden]{display:none!important}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+html[lang="ko"] body{word-break:keep-all}
+body{display:flex;justify-content:center}
+.app{position:relative;width:100%;max-width:440px;height:100%;display:flex;flex-direction:column;background:var(--paper);overflow:hidden;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@media (min-width:700px) and (min-height:700px){
+  body{align-items:center;background:#dfe4de}
+  .app{height:min(900px,96%);border-radius:36px;box-shadow:0 30px 70px -30px rgba(10,30,20,.5);border:10px solid #121a15}
+}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 
-/* ---------- prototype ---------- */
-.proto{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:40px;align-items:start}
-@media (max-width:820px){.proto{grid-template-columns:1fr;justify-items:center}}
-.phone{width:100%;max-width:370px;aspect-ratio:9/18.5;background:#0f1512;border-radius:42px;padding:12px;box-shadow:0 30px 60px -30px rgba(10,30,20,.55)}
-.screen{position:relative;width:100%;height:100%;border-radius:32px;overflow:hidden;background:#e9ece8;display:flex;flex-direction:column}
-.appbar{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px;font-size:.8rem}
-.brand{font-family:var(--display);font-weight:800;font-size:1.05rem}
-.brand span{color:var(--green)}
-.yr{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
-.mapbox{position:relative;flex:1;min-height:0}
-#city{width:100%;height:100%;display:block;cursor:pointer}
-.hint{position:absolute;left:12px;right:12px;bottom:10px;font-size:.74rem;background:rgba(255,255,255,.88);border-radius:10px;padding:6px 10px;color:var(--ink);text-align:center}
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 12px}
-.kpi{background:var(--card);border-radius:12px;padding:8px;display:grid;gap:2px}
-.kpi .lab{font-size:.62rem;color:var(--muted);line-height:1.2}
-.kpi .val{font-family:var(--display);font-weight:800;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 6px;gap:10px}
+.brand{display:flex;align-items:center;gap:8px}
+.logo{width:30px;height:30px;border-radius:9px;background:var(--green);color:#fff;display:grid;place-items:center;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:.95rem}
+.brand b{font-family:"Bricolage Grotesque",var(--display);font-weight:800;font-size:1.05rem;letter-spacing:-.01em}
+.brand b span{color:var(--green)}
+.brand small{display:block;font-size:.68rem;color:var(--muted);line-height:1.1}
+.lang{display:flex;background:#dde2dc;border-radius:999px;padding:3px}
+.lang button{border:0;background:transparent;border-radius:999px;padding:5px 10px;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+.mapbox{position:relative;flex:1 1 auto;min-height:200px;overflow:hidden}
+#city{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:manipulation}
+.badge{position:absolute;left:12px;top:6px;font-size:.72rem;font-weight:600;background:rgba(255,255,255,.9);border-radius:999px;padding:4px 10px}
+.badge i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--concrete,#9aa29d);margin-right:6px;vertical-align:1px}
+.badge.dream i{background:var(--green)}
+.maptip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-size:.74rem;background:rgba(22,32,26,.82);color:#fff;border-radius:999px;padding:5px 12px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.maptip.show{opacity:1}
+
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px 12px}
+.kpi{background:var(--card);border-radius:12px;padding:7px 9px;display:grid;gap:1px}
+.kpi .lab{font-size:.64rem;color:var(--muted);line-height:1.2;min-height:1.6em}
+.kpi .val{font-family:"Bricolage Grotesque",var(--display);font-weight:800;font-size:1.25rem;font-variant-numeric:tabular-nums;line-height:1.1}
 .kpi .unit{font-size:.6rem;color:var(--muted)}
-.kpi .delta{font-size:.62rem;font-weight:600;color:var(--green);min-height:1em}
-.toggle{display:grid;grid-template-columns:1fr 1fr;margin:4px 12px 14px;background:#d9ddd8;border-radius:999px;padding:4px}
-.toggle button{border:0;background:transparent;border-radius:999px;padding:9px 6px;font:600 .82rem var(--body);color:var(--muted);cursor:pointer}
-.toggle button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-.toggle button:focus-visible,.btn:focus-visible,.navdot:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+.kpi .delta{font-size:.66rem;font-weight:700;color:var(--green);min-height:1.1em}
 
-/* overlay sheets inside phone */
-.sheet{position:absolute;inset:0;background:var(--paper);transform:translateY(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;z-index:5}
-.sheet.open{transform:none}
-.sheet-head{display:flex;justify-content:space-between;align-items:center;padding:16px}
-.sheet-body{padding:0 14px 16px;overflow:auto;display:grid;gap:10px;align-content:start}
-.btn{border:0;border-radius:999px;padding:9px 14px;font:600 .82rem var(--body);cursor:pointer;background:var(--ink);color:#fff}
-.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.story{background:var(--card);margin:6px 12px 12px;border-radius:20px;padding:14px 16px 12px;display:grid;gap:8px;box-shadow:0 8px 24px -16px rgba(0,0,0,.35)}
+.prog{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.prog span{height:4px;border-radius:9px;background:#e3e7e2;overflow:hidden}
+.prog span i{display:block;height:100%;width:0;background:var(--green)}
+.story .kicker{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--green)}
+html[lang="ko"] .story .kicker{letter-spacing:0}
+.story h2{font-size:1.2rem}
+.story p{font-size:.88rem;color:var(--muted);min-height:3.9em}
+.ctrls{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.btn{border:0;border-radius:999px;padding:9px 14px;font-weight:600;font-size:.82rem;cursor:pointer;background:var(--ink);color:#fff}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
 .btn.green{background:var(--green)}
-.app-card{background:var(--card);border-radius:16px;padding:14px;display:grid;gap:8px}
-.pts{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--green);font-variant-numeric:tabular-nums}
-.row{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;gap:8px}
-.bar{height:8px;border-radius:99px;background:#e1e5e0;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--green);border-radius:99px}
-.tag{font-size:.68rem;padding:2px 8px;border-radius:99px;background:#e5f1ea;color:var(--green);font-weight:600}
+.seg{display:flex;background:#e4e8e3;border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:999px;padding:7px 11px;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.src{font-size:.62rem;color:var(--muted);line-height:1.3}
+
+/* sheets */
+.sheet{position:absolute;left:0;right:0;bottom:0;top:0;background:var(--paper);border-radius:0 0 22px 22px;box-shadow:0 12px 30px -18px rgba(0,0,0,.45);
+  transform:translateY(-105%);transition:transform .5s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;z-index:6}
+.sheet:not(.open){visibility:hidden;transition:transform .5s cubic-bezier(.2,.8,.2,1),visibility 0s linear .5s}
+.sheet.open{transform:none}
+.sheet .grab{display:none}
+.sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:10px 16px 6px}
+.sheet-head .kicker{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--heat)}
+html[lang="ko"] .sheet-head .kicker{letter-spacing:0}
+.sheet-head h3{font-size:1.15rem}
+.sheet-body{padding:4px 14px 14px;overflow:auto;display:grid;gap:10px;align-content:start}
+.card{background:var(--card);border-radius:16px;padding:12px;display:grid;gap:8px}
+.card svg{width:100%;height:auto;display:block}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.82rem}
+.tag{font-size:.68rem;padding:2px 8px;border-radius:99px;background:#e5f1ea;color:var(--green);font-weight:700;white-space:nowrap}
 .tag.v{background:#e5eef8;color:var(--volt)}
+.tag.h{background:#fbeee3;color:#b4581a}
+.pts{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.9rem;color:var(--green);font-variant-numeric:tabular-nums;line-height:1}
+.bar{height:8px;border-radius:99px;background:#e1e5e0;overflow:hidden}
+.bar i{display:block;height:100%;width:68%;background:var(--green)}
+.pilot{background:linear-gradient(160deg,#1f6d45,#2b8a57);color:#fff}
+.pilot .num{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:2.2rem;line-height:1}
+.pilot p{color:#e2f3e8;font-size:.86rem}
+.pilot ul{margin:0;padding-left:1.1em;font-size:.82rem;color:#e2f3e8}
+.small{font-size:.72rem;color:var(--muted)}
 
-.steps{display:grid;gap:14px;counter-reset:s}
-.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;padding:14px;border-radius:14px;border:1px solid transparent;cursor:pointer;background:transparent;text-align:left;font:inherit;color:inherit}
-.step:hover{background:var(--card);border-color:var(--line)}
-.step.active{background:var(--card);border-color:var(--green)}
-.step .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:.85rem;background:#e2e6e1}
-.step.active .n{background:var(--green);color:#fff}
-.step p{color:var(--muted);font-size:.93rem;margin-top:4px}
-.note{font-size:.85rem;color:var(--muted);border-left:3px solid var(--heat);padding:6px 12px;max-width:none}
+/* kiosk (tablet at the stand) */
+html.kiosk .app{max-width:none;border:0;border-radius:0;height:100%}
+html.kiosk .story h2{font-size:1.7rem}
+html.kiosk .story p{font-size:1.1rem}
+html.kiosk .kpi .val{font-size:1.8rem}
+html.kiosk .lang, html.kiosk .ctrls{display:none}
 
-/* ---------- cross-section ---------- */
-.xs-wrap{background:var(--card);border-radius:20px;padding:18px;overflow-x:auto;border:1px solid var(--line)}
-.xs-wrap svg{display:block;width:100%;min-width:720px;height:auto}
-.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:.85rem;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
-
-/* ---------- story strip ---------- */
-.story{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-@media (max-width:860px){.story{grid-template-columns:1fr 1fr}}
-@media (max-width:480px){.story{grid-template-columns:1fr}}
-.beat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:6px;align-content:start}
-.beat .pct{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
-.beat h3{font-size:1rem}
-.beat p{font-size:.85rem;color:var(--muted)}
-.beat .uses{font-size:.72rem;font-weight:600;color:var(--green)}
-.beat.crazy{border-color:var(--heat);background:#fff8f2}
-.beat.crazy .uses{color:var(--heat)}
-
-/* ---------- poster ---------- */
-.poster-row{display:grid;grid-template-columns:minmax(260px,420px) 1fr;gap:36px;align-items:start}
-@media (max-width:820px){.poster-row{grid-template-columns:1fr}}
-.poster{aspect-ratio:1/1.414;background:#fbfcfa;border-radius:6px;box-shadow:0 20px 50px -25px rgba(0,0,0,.35);padding:7%;display:grid;grid-template-rows:auto auto 1fr auto auto;gap:4%;border:1px solid var(--line);font-size:clamp(7px,1.4vw,11px)}
-.p-top{display:flex;justify-content:space-between;align-items:flex-start}
-.p-title{font-family:var(--display);font-weight:800;font-size:2.7em;line-height:.95;letter-spacing:-.02em}
-.p-title span{color:var(--green)}
-.p-sub{font-size:1em;color:var(--muted);margin-top:.5em;max-width:28ch}
-.p-badge{font-family:var(--mono);font-size:.85em;border:1px solid var(--ink);border-radius:99px;padding:.3em .8em;white-space:nowrap}
-.p-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:4%}
-.p-kpi{border-top:2px solid var(--green);padding-top:.4em}
-.p-kpi b{font-family:var(--display);font-size:2em;display:block;line-height:1}
-.p-kpi small{color:var(--muted);font-size:.85em}
-.p-xs{background:var(--card);border-radius:4px;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;padding:2%}
-.p-xs svg{width:100%;height:auto}
-.p-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:4%;font-size:.85em}
-.p-cols b{display:block;font-size:1.05em;margin-bottom:.2em}
-.p-cols p{color:var(--muted)}
-.p-foot{display:flex;justify-content:space-between;align-items:center;gap:4%}
-.p-foot canvas{width:16%;aspect-ratio:1;image-rendering:pixelated}
-.p-foot p{font-size:.9em}
-.p-foot p b{color:var(--green)}
-.why{display:grid;gap:14px}
-.why li{margin-bottom:6px}
-ul{margin:0;padding-left:1.2em}
-
-/* ---------- questions ---------- */
-.qs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:6px}
-.q .qn{font-family:var(--mono);font-size:.75rem;color:var(--green)}
-.q p{font-size:.92rem}
-.q .opts{font-size:.8rem;color:var(--muted)}
-footer{padding-top:28px;color:var(--muted);font-size:.82rem}
-@media (prefers-reduced-motion:reduce){.sheet{transition:none}}
+@media (prefers-reduced-motion:reduce){.sheet,.maptip{transition:none}}
 </style>
 </head>
 <body>
-<div class="wrap"><p id="errbox" hidden style="background:#fbebeb;padding:8px 12px;border-radius:8px;font-size:.85rem"></p>
-
-<header>
-  <div class="eyebrow">Guro Goes Green · ideas for 16 November</div>
-  <h1>Guro Twin and Dig Once, applied</h1>
-  <p class="lede">A working preview of two ideas for the event, so we can react to something concrete. It follows Sergio's story (problem → heat network → EVs → shared installation → app) and only uses numbers already in our report.</p>
-  <div class="chips">
-    <span class="chip"><b>Idea 6.1</b> Guro Twin: interactive district map behind a QR</span>
-    <span class="chip"><b>Idea C</b> Dig Once: street cross-section, one trench for two networks</span>
-    <span class="chip">Prototype · map and network are schematic</span>
+<div class="app" id="app">
+  <div class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">G³</div>
+      <div><b>Guro Goes <span>Green</span></b><small data-t="sub">Guro Twin · KTH Group 6</small></div>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button id="lEN" aria-pressed="true">EN</button>
+      <button id="lKO" aria-pressed="false">한국어</button>
+    </div>
   </div>
-</header>
 
-<!-- ================= PROTOTYPE ================= -->
-<section id="prototype" aria-labelledby="h-proto">
-  <div class="sec-head">
-    <div class="eyebrow">1 · What the audience sees after scanning the QR</div>
-    <h2 id="h-proto">Try it: Guro today vs Dare to Dream</h2>
-  </div>
-  <div class="proto">
-    <div class="phone" aria-label="Phone prototype of Guro Twin">
-      <div class="screen">
-        <div class="appbar">
-          <div class="brand">Guro <span>Twin</span></div>
-          <div class="yr" id="yearLabel">2026 · today</div>
-        </div>
-        <div class="mapbox">
-          <canvas id="city" aria-label="Isometric map of Guro district. Tap a street to open it."></canvas>
-          <div class="hint" id="hint">Switch to Dare to Dream, then tap a street</div>
-        </div>
-        <div class="kpis" aria-live="polite">
-          <div class="kpi"><span class="lab">Final energy</span><span class="val" id="kE">4,397</span><span class="unit">GWh / yr</span><span class="delta" id="dE"></span></div>
-          <div class="kpi"><span class="lab">CO₂ emissions</span><span class="val" id="kC">857</span><span class="unit">kt / yr</span><span class="delta" id="dC"></span></div>
-          <div class="kpi"><span class="lab">PM2.5</span><span class="val" id="kP">23.0</span><span class="unit">µg/m³</span><span class="delta" id="dP"></span></div>
-        </div>
-        <div class="toggle" role="group" aria-label="Scenario">
-          <button id="bToday" aria-pressed="true">Guro today</button>
-          <button id="bDream" aria-pressed="false">Dare to Dream</button>
-        </div>
-
-        <!-- Dig once sheet -->
-        <div class="sheet" id="sheetDig" aria-hidden="true">
-          <div class="sheet-head">
-            <div><div class="eyebrow">Dig once</div><h3>One excavation, two networks</h3></div>
-            <button class="btn ghost" data-close>Close</button>
-          </div>
-          <div class="sheet-body">
-            <div class="app-card" id="miniXS" style="padding:6px">
-<svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Street cross-section: one trench holding district heating pipes and EV charging cables, with curb chargers above">
+  <div class="mapbox">
+    <canvas id="city" aria-label="Schematic isometric map of Guro-gu"></canvas>
+    <div class="badge" id="badge"><i></i><span id="badgeTxt">2026 · Guro today</span></div>
+    <div class="maptip" id="maptip" data-t="tip">Tap a street to open it</div>
+  <!-- Dig once -->
+  <div class="sheet" id="shDig" aria-hidden="true">
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <div><div class="kicker" data-t="digK">Dig once</div><h3 data-t="digH">One excavation, two networks</h3></div>
+      <button class="btn ghost" data-close data-t="close">Close</button>
+    </div>
+    <div class="sheet-body">
+      <div class="card" style="padding:6px">
+<svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Street cross-section: one trench with heat pipes and EV charging cables">
   <defs>
-    <pattern id="soilc" width="14" height="14" patternUnits="userSpaceOnUse">
-      <rect width="14" height="14" fill="#cdbb9e"/><circle cx="3" cy="4" r="1.2" fill="#b49f80"/><circle cx="10" cy="10" r="1" fill="#b49f80"/>
-    </pattern>
-    <linearGradient id="skyc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f3ec"/><stop offset="1" stop-color="#f7faf8"/></linearGradient>
+    <pattern id="soil" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#cdbb9e"/><circle cx="3" cy="4" r="1.2" fill="#b49f80"/><circle cx="10" cy="10" r="1" fill="#b49f80"/></pattern>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f3ec"/><stop offset="1" stop-color="#f7faf8"/></linearGradient>
   </defs>
-  <rect x="0" y="0" width="900" height="170" fill="url(#skyc)"/>
-  <!-- building -->
+  <rect x="0" y="0" width="900" height="170" fill="url(#sky)"/>
   <rect x="20" y="20" width="150" height="150" fill="#dfe8e2" stroke="#b9c7be"/>
-  <rect x="36" y="34" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="34" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="34" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="36" y="66" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="66" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="66" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="36" y="98" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="98" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="98" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="36" y="130" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="130" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="130" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/>
+  <g fill="#f5c98f" opacity=".85">
+    <rect x="36" y="34" width="28" height="18" rx="2"/><rect x="80" y="34" width="28" height="18" rx="2"/><rect x="124" y="34" width="28" height="18" rx="2"/>
+    <rect x="36" y="66" width="28" height="18" rx="2"/><rect x="80" y="66" width="28" height="18" rx="2"/><rect x="124" y="66" width="28" height="18" rx="2"/>
+    <rect x="36" y="98" width="28" height="18" rx="2"/><rect x="80" y="98" width="28" height="18" rx="2"/><rect x="124" y="98" width="28" height="18" rx="2"/>
+  </g>
   <rect x="62" y="120" width="40" height="50" fill="#c3d3c8"/>
   <rect x="120" y="138" width="34" height="22" rx="3" fill="#e07a2c"/>
-  
-  <!-- pavement + road -->
+  <text x="137" y="130" font-size="16" text-anchor="middle" fill="#16201a" font-family="IBM Plex Sans, Noto Sans KR, sans-serif" data-t="xHP">heat pump</text>
   <rect x="0" y="170" width="900" height="16" fill="#8d958f"/>
   <rect x="170" y="164" width="140" height="8" fill="#b7bdb8"/>
   <rect x="310" y="166" width="590" height="6" fill="#6f7772"/>
-  <rect x="350" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="445" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="540" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="635" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="730" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="825" y="167" width="40" height="3" fill="#f2f2f2"/>
-  <!-- chargers -->
-  <g><rect x="210" y="118" width="16" height="46" rx="4" fill="#2b78c9"/><rect x="213" y="124" width="10" height="9" rx="1.5" fill="#cfe3f7"/><circle cx="218" cy="146" r="3" fill="#9fe0b8"/></g><g><rect x="270" y="118" width="16" height="46" rx="4" fill="#2b78c9"/><rect x="273" y="124" width="10" height="9" rx="1.5" fill="#cfe3f7"/><circle cx="278" cy="146" r="3" fill="#9fe0b8"/></g>
-  <!-- car -->
+  <g fill="#f2f2f2"><rect x="350" y="167" width="40" height="3"/><rect x="445" y="167" width="40" height="3"/><rect x="540" y="167" width="40" height="3"/><rect x="635" y="167" width="40" height="3"/><rect x="730" y="167" width="40" height="3"/><rect x="825" y="167" width="40" height="3"/></g>
+  <g><rect x="210" y="118" width="16" height="46" rx="4" fill="#2b78c9"/><rect x="213" y="124" width="10" height="9" rx="1.5" fill="#cfe3f7"/><circle cx="218" cy="146" r="3" fill="#9fe0b8"/></g>
+  <g><rect x="270" y="118" width="16" height="46" rx="4" fill="#2b78c9"/><rect x="273" y="124" width="10" height="9" rx="1.5" fill="#cfe3f7"/><circle cx="278" cy="146" r="3" fill="#9fe0b8"/></g>
   <g transform="translate(330,126)">
     <path d="M0 30 Q4 12 30 10 L60 2 Q86 0 104 12 L128 16 Q140 20 140 32 L140 38 L0 38 Z" fill="#2b8a57"/>
     <path d="M38 12 L60 5 Q80 4 94 13 Z" fill="#cfe9da"/>
-    <circle cx="28" cy="38" r="8" fill="#17201b"/><circle cx="112" cy="38" r="8" fill="#17201b"/>
+    <circle cx="28" cy="38" r="8" fill="#16201a"/><circle cx="112" cy="38" r="8" fill="#16201a"/>
     <path d="M-60 16 Q-20 10 0 22" stroke="#2b78c9" stroke-width="3" fill="none"/>
   </g>
-  
-  <!-- ground -->
-  <rect x="0" y="186" width="900" height="254" fill="url(#soilc)"/>
-  <!-- trench -->
+  <text x="248" y="104" font-size="19" text-anchor="middle" fill="#16201a" font-family="IBM Plex Sans, Noto Sans KR, sans-serif" font-weight="600" data-t="xCh">curb chargers</text>
+  <rect x="0" y="186" width="900" height="254" fill="url(#soil)"/>
   <path d="M190 186 L210 410 L610 410 L630 186 Z" fill="#e6d8bf" stroke="#a8916d" stroke-width="2" stroke-dasharray="6 5"/>
-  <!-- service connection to building -->
   <path d="M260 300 L150 300 L150 170" stroke="#e07a2c" stroke-width="7" fill="none" stroke-linecap="round"/>
-  <!-- heat pipes -->
-  <g>
-    <circle cx="330" cy="330" r="50" fill="#f6c7a1" stroke="#e07a2c" stroke-width="10"/>
-    <circle cx="460" cy="330" r="50" fill="#fbe2cf" stroke="#f0a468" stroke-width="10"/>
-    
-  </g>
-  <!-- power conduit -->
+  <circle cx="330" cy="330" r="50" fill="#f6c7a1" stroke="#e07a2c" stroke-width="10"/>
+  <circle cx="460" cy="330" r="50" fill="#fbe2cf" stroke="#f0a468" stroke-width="10"/>
+  <text x="330" y="335" font-size="18" text-anchor="middle" font-family="IBM Plex Sans, Noto Sans KR, sans-serif" font-weight="600" fill="#16201a" data-t="xWarm">warm</text>
+  <text x="460" y="335" font-size="18" text-anchor="middle" font-family="IBM Plex Sans, Noto Sans KR, sans-serif" font-weight="600" fill="#16201a" data-t="xCool">cool</text>
   <rect x="535" y="270" width="54" height="54" rx="10" fill="#dbe8f6" stroke="#2b78c9" stroke-width="4"/>
-  <circle cx="552" cy="288" r="7" fill="#2b78c9"/><circle cx="572" cy="288" r="7" fill="#2b78c9"/><circle cx="552" cy="306" r="7" fill="#2b78c9"/><circle cx="572" cy="306" r="7" fill="#2b78c9"/>
+  <g fill="#2b78c9"><circle cx="552" cy="288" r="7"/><circle cx="572" cy="288" r="7"/><circle cx="552" cy="306" r="7"/><circle cx="572" cy="306" r="7"/></g>
   <path d="M562 270 L562 230 L250 230 L250 186" stroke="#2b78c9" stroke-width="4" fill="none"/>
-  <!-- data cable -->
   <circle cx="562" cy="350" r="9" fill="#2b8a57"/>
-  
-</svg></div>
-            <div class="app-card">
-              <div class="row"><span>Heat network expansion</span><span class="tag">4.9× today</span></div>
-              <div class="row"><span>EV charging power</span><span class="tag v">1,508 MW</span></div>
-              <div class="row"><span>Excavation and road closures</span><span class="tag">shared</span></div>
-            </div>
-            <button class="btn green" id="toApp">Join Green Move Guro</button>
-          </div>
-        </div>
-
-        <!-- App sheet -->
-        <div class="sheet" id="sheetApp" aria-hidden="true">
-          <div class="sheet-head">
-            <div><div class="eyebrow">Guro Smart City app</div><h3>Green Move Guro</h3></div>
-            <button class="btn ghost" data-close>Close</button>
-          </div>
-          <div class="sheet-body">
-            <div class="app-card">
-              <div class="row"><span>Your green points</span><span class="tag">Level 3</span></div>
-              <div class="pts" id="pts">2,450</div>
-              <div class="bar"><i style="width:68%"></i></div>
-              <div class="row" style="color:var(--muted)"><span>550 points to a free month of charging</span></div>
-            </div>
-            <div class="app-card">
-              <div class="row"><b>Swap your old car</b><span class="tag v">ICE → EV</span></div>
-              <div class="row"><span>Seoul EV transition subsidy</span><b>₩1,300,000</b></div>
-              <div class="row"><span>Green Move bonus, EV only</span><b style="color:var(--green)">+ charging credit</b></div>
-              <p style="font-size:.72rem;color:var(--muted)">The city pays the subsidy. The app adds the bonus only when the new car is electric.</p>
-            </div>
-            <div class="app-card">
-              <div class="row"><span>Curb charger · Guro-dong 3</span><span class="tag">free now</span></div>
-              <button class="btn" id="bookBtn">Book a slot</button>
-            </div>
-          </div>
-        </div>
+  <g font-family="IBM Plex Sans, Noto Sans KR, sans-serif" font-size="19" fill="#16201a">
+    <line x1="330" y1="270" x2="330" y2="236" stroke="#16201a"/><text x="330" y="226" text-anchor="middle" font-weight="600" data-t="xPipes">5GDHC heat pipes (larger diameter)</text>
+    <line x1="589" y1="290" x2="640" y2="290" stroke="#16201a"/><text x="646" y="286" font-weight="600" data-t="xPow">EV power cables</text><text x="646" y="309" fill="#5b665f" data-t="xPow2">in a shared conduit</text>
+    <line x1="571" y1="352" x2="640" y2="352" stroke="#16201a"/><text x="646" y="358" font-weight="600" data-t="xData">smart-charging data</text>
+  </g>
+  <path d="M210 422 L210 432 L610 432 L610 422" stroke="#16201a" fill="none" stroke-width="1.5"/>
+  <text x="410" y="428" text-anchor="middle" font-family="Bricolage Grotesque, Noto Sans KR, sans-serif" font-size="20" font-weight="800" fill="#16201a" paint-order="stroke" stroke="#cdbb9e" stroke-width="6" data-t="xOne">ONE excavation · heat utility + KEPCO</text>
+</svg>
+      </div>
+      <div class="card">
+        <div class="row"><span data-t="r1">Heat network</span><span class="tag h" data-t="r1v">4.9× today</span></div>
+        <div class="row"><span data-t="r2">EV charging power</span><span class="tag v">1,508 MW</span></div>
+        <div class="row"><span data-t="r3">Excavation, road closures</span><span class="tag" data-t="r3v">shared</span></div>
       </div>
     </div>
+  </div>
 
-    <div class="steps" role="list">
-      <button class="step active" data-step="1" role="listitem">
-        <span class="n">1</span>
-        <span><h3>Guro today</h3><p>Grey, ageing buildings heated with gas boilers, a PM2.5 haze, almost no local renewables. Counters show our baseline.</p></span>
-      </button>
-      <button class="step" data-step="2" role="listitem">
-        <span class="n">2</span>
-        <span><h3>Switch to Dare to Dream</h3><p>Buildings turn green, the heat network and the sewage heat pump light up, chargers appear, and the counters drop to our results: −20.9% energy, −42.6% CO₂, 18.2 µg/m³.</p></span>
-      </button>
-      <button class="step" data-step="3" role="listitem">
-        <span class="n">3</span>
-        <span><h3>Tap a street → Dig once</h3><p>The street opens into the cross-section: heat pipes and EV cables in the same trench. This is our business model in one picture.</p></span>
-      </button>
-      <button class="step" data-step="4" role="listitem">
-        <span class="n">4</span>
-        <span><h3>Join Green Move Guro</h3><p>Green points, curb charger booking and an ICE → EV bonus on top of Seoul's existing subsidy. People leave with the app idea in their hand.</p></span>
-      </button>
-      <p class="note">The network lines, building heights and sewage heat pump location are illustrative. Only the KPI numbers are real (Dare to Dream results from our report). In the final version they would come from one numbers file shared with the slides and the poster.</p>
+  <!-- App -->
+  <div class="sheet" id="shApp" aria-hidden="true">
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <div><div class="kicker" style="color:var(--green)" data-t="appK">Guro Smart City app</div><h3>Green Move Guro</h3></div>
+      <button class="btn ghost" data-close data-t="close">Close</button>
+    </div>
+    <div class="sheet-body">
+      <div class="card">
+        <div class="row"><span data-t="a1">Your green points</span><span class="tag">Lv 3</span></div>
+        <div class="pts" id="pts">2,450</div>
+        <div class="bar"><i></i></div>
+        <div class="small" data-t="a2">550 points to a free month of charging</div>
+      </div>
+      <div class="card">
+        <div class="row"><b data-t="a3">Swap your old car</b><span class="tag v" data-t="a3v">ICE → EV</span></div>
+        <div class="row"><span data-t="a4">Seoul EV transition subsidy</span><b>₩1,300,000</b></div>
+        <div class="row"><span data-t="a5">Green Move bonus, EV only</span><b style="color:var(--green)" data-t="a5v">+ charging credit</b></div>
+      </div>
+      <div class="card">
+        <div class="row"><span data-t="a6">Curb charger · G-Valley 3</span><span class="tag" data-t="a6v">free now</span></div>
+        <button class="btn green" id="bBook" data-t="a7">Book a slot</button>
+      </div>
     </div>
   </div>
-</section>
 
-<!-- ================= CROSS SECTION ================= -->
-<section aria-labelledby="h-xs">
-  <div class="sec-head">
-    <div class="eyebrow">2 · The visual we reuse three times: app, slide, poster</div>
-    <h2 id="h-xs">Dig once: the street cross-section</h2>
-    <p class="lede">Guro opens its streets anyway to expand the heat network. Laying the charger cables in the same trench shares the civil works between two utilities.</p>
-  </div>
-  <div class="xs-wrap" id="xsBig">
-<svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Street cross-section: one trench holding district heating pipes and EV charging cables, with curb chargers above">
-  <defs>
-    <pattern id="soila" width="14" height="14" patternUnits="userSpaceOnUse">
-      <rect width="14" height="14" fill="#cdbb9e"/><circle cx="3" cy="4" r="1.2" fill="#b49f80"/><circle cx="10" cy="10" r="1" fill="#b49f80"/>
-    </pattern>
-    <linearGradient id="skya" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f3ec"/><stop offset="1" stop-color="#f7faf8"/></linearGradient>
-  </defs>
-  <rect x="0" y="0" width="900" height="170" fill="url(#skya)"/>
-  <!-- building -->
-  <rect x="20" y="20" width="150" height="150" fill="#dfe8e2" stroke="#b9c7be"/>
-  <rect x="36" y="34" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="34" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="34" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="36" y="66" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="66" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="66" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="36" y="98" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="98" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="98" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="36" y="130" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="130" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="130" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/>
-  <rect x="62" y="120" width="40" height="50" fill="#c3d3c8"/>
-  <rect x="120" y="138" width="34" height="22" rx="3" fill="#e07a2c"/>
-  <text x="137" y="132" font-size="11" text-anchor="middle" fill="#17201b" font-family="IBM Plex Sans">heat pump</text>
-  <!-- pavement + road -->
-  <rect x="0" y="170" width="900" height="16" fill="#8d958f"/>
-  <rect x="170" y="164" width="140" height="8" fill="#b7bdb8"/>
-  <rect x="310" y="166" width="590" height="6" fill="#6f7772"/>
-  <rect x="350" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="445" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="540" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="635" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="730" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="825" y="167" width="40" height="3" fill="#f2f2f2"/>
-  <!-- chargers -->
-  <g><rect x="210" y="118" width="16" height="46" rx="4" fill="#2b78c9"/><rect x="213" y="124" width="10" height="9" rx="1.5" fill="#cfe3f7"/><circle cx="218" cy="146" r="3" fill="#9fe0b8"/></g><g><rect x="270" y="118" width="16" height="46" rx="4" fill="#2b78c9"/><rect x="273" y="124" width="10" height="9" rx="1.5" fill="#cfe3f7"/><circle cx="278" cy="146" r="3" fill="#9fe0b8"/></g>
-  <!-- car -->
-  <g transform="translate(330,126)">
-    <path d="M0 30 Q4 12 30 10 L60 2 Q86 0 104 12 L128 16 Q140 20 140 32 L140 38 L0 38 Z" fill="#2b8a57"/>
-    <path d="M38 12 L60 5 Q80 4 94 13 Z" fill="#cfe9da"/>
-    <circle cx="28" cy="38" r="8" fill="#17201b"/><circle cx="112" cy="38" r="8" fill="#17201b"/>
-    <path d="M-60 16 Q-20 10 0 22" stroke="#2b78c9" stroke-width="3" fill="none"/>
-  </g>
-  <text x="240" y="108" font-size="12" text-anchor="middle" fill="#17201b" font-family="IBM Plex Sans" font-weight="600">curb chargers</text>
-  <!-- ground -->
-  <rect x="0" y="186" width="900" height="254" fill="url(#soila)"/>
-  <!-- trench -->
-  <path d="M190 186 L210 410 L610 410 L630 186 Z" fill="#e6d8bf" stroke="#a8916d" stroke-width="2" stroke-dasharray="6 5"/>
-  <!-- service connection to building -->
-  <path d="M260 300 L150 300 L150 170" stroke="#e07a2c" stroke-width="7" fill="none" stroke-linecap="round"/>
-  <!-- heat pipes -->
-  <g>
-    <circle cx="330" cy="330" r="50" fill="#f6c7a1" stroke="#e07a2c" stroke-width="10"/>
-    <circle cx="460" cy="330" r="50" fill="#fbe2cf" stroke="#f0a468" stroke-width="10"/>
-    <text x="330" y="335" font-size="13" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" fill="#17201b">warm</text>
-    <text x="460" y="335" font-size="13" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" fill="#17201b">cool</text>
-  </g>
-  <!-- power conduit -->
-  <rect x="535" y="270" width="54" height="54" rx="10" fill="#dbe8f6" stroke="#2b78c9" stroke-width="4"/>
-  <circle cx="552" cy="288" r="7" fill="#2b78c9"/><circle cx="572" cy="288" r="7" fill="#2b78c9"/><circle cx="552" cy="306" r="7" fill="#2b78c9"/><circle cx="572" cy="306" r="7" fill="#2b78c9"/>
-  <path d="M562 270 L562 230 L250 230 L250 186" stroke="#2b78c9" stroke-width="4" fill="none"/>
-  <!-- data cable -->
-  <circle cx="562" cy="350" r="9" fill="#2b8a57"/>
-  
-  <!-- annotations -->
-  <g font-family="IBM Plex Sans" font-size="13" fill="#17201b">
-    <line x1="330" y1="270" x2="330" y2="232" stroke="#17201b"/><text x="330" y="226" text-anchor="middle" font-weight="600">5GDHC pipes (larger diameter)</text>
-    <line x1="589" y1="290" x2="660" y2="290" stroke="#17201b"/><text x="666" y="286" font-weight="600">EV power cables</text><text x="666" y="303" fill="#5d6862">in a shared conduit</text>
-    <line x1="571" y1="350" x2="660" y2="350" stroke="#17201b"/><text x="666" y="354" font-weight="600">smart-charging data</text>
-    <line x1="150" y1="250" x2="40" y2="250" stroke="#17201b"/><text x="30" y="240" text-anchor="start" font-size="12">house</text><text x="30" y="270" text-anchor="start" font-size="12">connection</text>
-  </g>
-  <!-- cost bracket -->
-  <path d="M210 422 L210 432 L610 432 L610 422" stroke="#17201b" fill="none" stroke-width="1.5"/>
-  <text x="410" y="428" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="800" fill="#17201b" paint-order="stroke" stroke="#cdbb9e" stroke-width="6">ONE excavation · shared by the heat utility and KEPCO</text>
-  
-</svg></div>
-  <div class="legend">
-    <span><i style="background:var(--heat)"></i>5GDHC heat pipes, supply and return</span>
-    <span><i style="background:var(--volt)"></i>Power cables for curb chargers</span>
-    <span><i style="background:var(--green)"></i>Smart-charging data cable</span>
-    <span><i style="background:#b9a588"></i>Shared trench</span>
-  </div>
-</section>
-
-<!-- ================= STORY ================= -->
-<section aria-labelledby="h-story">
-  <div class="sec-head">
-    <div class="eyebrow">3 · Where it sits in the presentation</div>
-    <h2 id="h-story">Sergio's chain, with our two visuals in place</h2>
-    <p class="lede">About 60% project and 40% idea. Only Dare to Dream is shown in depth.</p>
-  </div>
-  <div class="story">
-    <div class="beat"><span class="pct">~10% · hook</span><h3>Guro in one image</h3><p>Guro Twin in grey on the screen. QR appears: "scan and follow along".</p><span class="uses">Guro Twin, today view</span></div>
-    <div class="beat"><span class="pct">~15% · problem</span><h3>Our three KPIs</h3><p>Aging buildings on LNG, traffic and PM2.5, almost no local renewables.</p><span class="uses">Baseline counters</span></div>
-    <div class="beat"><span class="pct">~35% · solution</span><h3>Dare to Dream</h3><p>Heat pumps + sewage heat feed a bigger heat network. EVs need a charging network.</p><span class="uses">Toggle to Dare to Dream live</span></div>
-    <div class="beat crazy"><span class="pct">~30% · the idea</span><h3>Dig once + app</h3><p>One trench, two networks. Green points and the ICE → EV bonus bring residents in.</p><span class="uses">Cross-section + app screen</span></div>
-    <div class="beat"><span class="pct">~10% · close</span><h3>Who pays, who earns</h3><p>Water-source heat pump case: NPV +2.56 M USD, ~12-year payback. One line to remember.</p><span class="uses">Flyer with the same QR</span></div>
-  </div>
-</section>
-
-<!-- ================= POSTER ================= -->
-<section aria-labelledby="h-poster">
-  <div class="sec-head">
-    <div class="eyebrow">4 · Poster draft (deadline 11 November)</div>
-    <h2 id="h-poster">The cross-section as the centrepiece</h2>
-  </div>
-  <div class="poster-row">
-    <div class="poster" aria-label="Poster layout draft">
-      <div class="p-top">
-        <div><div class="p-title">Guro<br>Goes <span>Green</span></div><div class="p-sub">One trench, two networks: a cleaner, warmer Guro by 2035</div></div>
-        <div class="p-badge">G³ · Group 6</div>
+  <!-- Pilot -->
+  <div class="sheet" id="shPilot" aria-hidden="true">
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <div><div class="kicker" style="color:var(--green)" data-t="pK">Next step for Guro</div><h3 data-t="pH">Start with one street</h3></div>
+      <button class="btn ghost" data-close data-t="close">Close</button>
+    </div>
+    <div class="sheet-body">
+      <div class="card pilot">
+        <div class="num" data-t="pNum">1 street · 1 trench</div>
+        <p data-t="pP">Pair the next district-heating extension in G-Valley with curb chargers laid in the same trench.</p>
+        <ul>
+          <li data-t="pL1">Who pays what: heat utility, KEPCO, Guro-gu</li>
+          <li data-t="pL2">Days of road works saved</li>
+          <li data-t="pL3">How residents use the curb chargers</li>
+        </ul>
       </div>
-      <div class="p-kpis">
-        <div class="p-kpi"><b>−20.9%</b><small>final energy</small></div>
-        <div class="p-kpi"><b>−42.6%</b><small>CO₂ emissions</small></div>
-        <div class="p-kpi"><b>18.2</b><small>µg/m³ PM2.5 (from 23.0)</small></div>
+      <div class="card">
+        <div class="row"><span data-t="pR1">Dare to Dream investment</span><b>1,827.6 M USD</b></div>
+        <div class="row"><span data-t="pR2">Sewage heat pump case</span><span class="tag">NPV +2.56 M USD</span></div>
+        <div class="row"><span data-t="pR3">Discounted payback</span><b data-t="pR3v">~12 years</b></div>
       </div>
-      <div class="p-xs" id="xsPoster">
-<svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Street cross-section: one trench holding district heating pipes and EV charging cables, with curb chargers above">
-  <defs>
-    <pattern id="soilb" width="14" height="14" patternUnits="userSpaceOnUse">
-      <rect width="14" height="14" fill="#cdbb9e"/><circle cx="3" cy="4" r="1.2" fill="#b49f80"/><circle cx="10" cy="10" r="1" fill="#b49f80"/>
-    </pattern>
-    <linearGradient id="skyb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f3ec"/><stop offset="1" stop-color="#f7faf8"/></linearGradient>
-  </defs>
-  <rect x="0" y="0" width="900" height="170" fill="url(#skyb)"/>
-  <!-- building -->
-  <rect x="20" y="20" width="150" height="150" fill="#dfe8e2" stroke="#b9c7be"/>
-  <rect x="36" y="34" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="34" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="34" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="36" y="66" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="66" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="66" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="36" y="98" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="98" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="98" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="36" y="130" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="80" y="130" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/><rect x="124" y="130" width="28" height="18" rx="2" fill="#f5c98f" opacity=".85"/>
-  <rect x="62" y="120" width="40" height="50" fill="#c3d3c8"/>
-  <rect x="120" y="138" width="34" height="22" rx="3" fill="#e07a2c"/>
-  <text x="137" y="132" font-size="11" text-anchor="middle" fill="#17201b" font-family="IBM Plex Sans">heat pump</text>
-  <!-- pavement + road -->
-  <rect x="0" y="170" width="900" height="16" fill="#8d958f"/>
-  <rect x="170" y="164" width="140" height="8" fill="#b7bdb8"/>
-  <rect x="310" y="166" width="590" height="6" fill="#6f7772"/>
-  <rect x="350" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="445" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="540" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="635" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="730" y="167" width="40" height="3" fill="#f2f2f2"/><rect x="825" y="167" width="40" height="3" fill="#f2f2f2"/>
-  <!-- chargers -->
-  <g><rect x="210" y="118" width="16" height="46" rx="4" fill="#2b78c9"/><rect x="213" y="124" width="10" height="9" rx="1.5" fill="#cfe3f7"/><circle cx="218" cy="146" r="3" fill="#9fe0b8"/></g><g><rect x="270" y="118" width="16" height="46" rx="4" fill="#2b78c9"/><rect x="273" y="124" width="10" height="9" rx="1.5" fill="#cfe3f7"/><circle cx="278" cy="146" r="3" fill="#9fe0b8"/></g>
-  <!-- car -->
-  <g transform="translate(330,126)">
-    <path d="M0 30 Q4 12 30 10 L60 2 Q86 0 104 12 L128 16 Q140 20 140 32 L140 38 L0 38 Z" fill="#2b8a57"/>
-    <path d="M38 12 L60 5 Q80 4 94 13 Z" fill="#cfe9da"/>
-    <circle cx="28" cy="38" r="8" fill="#17201b"/><circle cx="112" cy="38" r="8" fill="#17201b"/>
-    <path d="M-60 16 Q-20 10 0 22" stroke="#2b78c9" stroke-width="3" fill="none"/>
-  </g>
-  <text x="240" y="108" font-size="12" text-anchor="middle" fill="#17201b" font-family="IBM Plex Sans" font-weight="600">curb chargers</text>
-  <!-- ground -->
-  <rect x="0" y="186" width="900" height="254" fill="url(#soilb)"/>
-  <!-- trench -->
-  <path d="M190 186 L210 410 L610 410 L630 186 Z" fill="#e6d8bf" stroke="#a8916d" stroke-width="2" stroke-dasharray="6 5"/>
-  <!-- service connection to building -->
-  <path d="M260 300 L150 300 L150 170" stroke="#e07a2c" stroke-width="7" fill="none" stroke-linecap="round"/>
-  <!-- heat pipes -->
-  <g>
-    <circle cx="330" cy="330" r="50" fill="#f6c7a1" stroke="#e07a2c" stroke-width="10"/>
-    <circle cx="460" cy="330" r="50" fill="#fbe2cf" stroke="#f0a468" stroke-width="10"/>
-    <text x="330" y="335" font-size="13" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" fill="#17201b">warm</text>
-    <text x="460" y="335" font-size="13" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" fill="#17201b">cool</text>
-  </g>
-  <!-- power conduit -->
-  <rect x="535" y="270" width="54" height="54" rx="10" fill="#dbe8f6" stroke="#2b78c9" stroke-width="4"/>
-  <circle cx="552" cy="288" r="7" fill="#2b78c9"/><circle cx="572" cy="288" r="7" fill="#2b78c9"/><circle cx="552" cy="306" r="7" fill="#2b78c9"/><circle cx="572" cy="306" r="7" fill="#2b78c9"/>
-  <path d="M562 270 L562 230 L250 230 L250 186" stroke="#2b78c9" stroke-width="4" fill="none"/>
-  <!-- data cable -->
-  <circle cx="562" cy="350" r="9" fill="#2b8a57"/>
-  
-  <!-- annotations -->
-  <g font-family="IBM Plex Sans" font-size="13" fill="#17201b">
-    <line x1="330" y1="270" x2="330" y2="232" stroke="#17201b"/><text x="330" y="226" text-anchor="middle" font-weight="600">5GDHC pipes (larger diameter)</text>
-    <line x1="589" y1="290" x2="660" y2="290" stroke="#17201b"/><text x="666" y="286" font-weight="600">EV power cables</text><text x="666" y="303" fill="#5d6862">in a shared conduit</text>
-    <line x1="571" y1="350" x2="660" y2="350" stroke="#17201b"/><text x="666" y="354" font-weight="600">smart-charging data</text>
-    <line x1="150" y1="250" x2="40" y2="250" stroke="#17201b"/><text x="30" y="240" text-anchor="start" font-size="12">house</text><text x="30" y="270" text-anchor="start" font-size="12">connection</text>
-  </g>
-  <!-- cost bracket -->
-  <path d="M210 422 L210 432 L610 432 L610 422" stroke="#17201b" fill="none" stroke-width="1.5"/>
-  <text x="410" y="428" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="15" font-weight="800" fill="#17201b" paint-order="stroke" stroke="#cdbb9e" stroke-width="6">ONE excavation · shared by the heat utility and KEPCO</text>
-  
-</svg></div>
-      <div class="p-cols">
-        <div><b>Problem</b><p>Gas boilers in ageing buildings, traffic pollution, almost no local renewables.</p></div>
-        <div><b>Solution</b><p>Sewage-heat heat pump, 5GDHC network, PV + PVT, 85% EVs.</p></div>
-        <div><b>Business</b><p>Shared excavation, curb charging, Green Move Guro app.</p></div>
-      </div>
-      <div class="p-foot">
-        <p><b>Scan to explore Guro Twin</b><br>and open a street yourself</p>
-        <canvas id="qr" width="25" height="25" aria-label="Placeholder QR code"></canvas>
+      <div class="card" style="background:#16201a;color:#fff">
+        <b data-t="pC">Talk to us at the poster</b>
+        <span class="small" style="color:#c9d3cc" data-t="pC2">Guro Goes Green · KTH Royal Institute of Technology · Group 6</span>
+        <button class="btn ghost" id="bExplore" style="color:#fff;border-color:#4a5a50" data-t="explore">Explore the map yourself</button>
       </div>
     </div>
-    <div class="why">
-      <h3>Why this layout</h3>
-      <ul>
-        <li>The jury reads the poster in about 10 seconds: one big picture, three numbers, a QR.</li>
-        <li>The same cross-section appears in the app and on a slide, so poster, talk and QR feel like one product.</li>
-        <li>The KPI row uses only Dare to Dream results from the report, so it can't contradict the slides.</li>
-        <li>The pipes are drawn wider than standard district-heating pipes. That shows honestly that 5GDHC needs larger diameters, which the teacher asked about.</li>
-      </ul>
-      <p class="note">The QR is a placeholder pattern. The real one would point to the hosted Guro Twin.</p>
-    </div>
   </div>
-</section>
+  </div>
 
-<!-- ================= QUESTIONS ================= -->
-<section aria-labelledby="h-q" style="border-bottom:0">
-  <div class="sec-head">
-    <div class="eyebrow">5 · Your turn</div>
-    <h2 id="h-q">What I need from you</h2>
+  <div class="kpis" aria-live="polite">
+    <div class="kpi"><span class="lab" data-t="kE">Final energy</span><span class="val" id="kE">4,397</span><span class="unit">GWh/yr</span><span class="delta" id="dE"></span></div>
+    <div class="kpi"><span class="lab" data-t="kC">CO₂ emissions</span><span class="val" id="kC">857</span><span class="unit">kt/yr</span><span class="delta" id="dC"></span></div>
+    <div class="kpi"><span class="lab" data-t="kP">PM2.5</span><span class="val" id="kP">23.0</span><span class="unit">µg/m³</span><span class="delta" id="dP"></span></div>
   </div>
-  <div class="qs">
-    <div class="q"><span class="qn">Q1</span><p>Do we build Guro Twin for real, or keep only the cross-section and the app screens?</p><span class="opts">Build it · Visuals only · Not convinced</span></div>
-    <div class="q"><span class="qn">Q2</span><p>Is the QR moment in the hook (everyone follows along) or at the end (people explore after)?</p><span class="opts">Hook · End · Both</span></div>
-    <div class="q"><span class="qn">Q3</span><p>Is the cross-section the right centrepiece for the poster?</p><span class="opts">Yes · Use the map instead · Something else</span></div>
-    <div class="q"><span class="qn">Q4</span><p>Does the ICE → EV bonus on top of Seoul's subsidy belong in the app story?</p><span class="opts">Yes · Too much detail</span></div>
-    <div class="q"><span class="qn">Q5</span><p>Who can help? Map and interactions (I can lead), cross-section drawing, poster layout, app screens.</p><span class="opts">Name + task</span></div>
+
+  <div class="story" id="story">
+    <div class="prog" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
+    <div class="kicker" id="sK">1 / 5</div>
+    <h2 id="sH">Guro today</h2>
+    <p id="sP"></p>
+    <div class="ctrls">
+      <div style="display:flex;gap:6px">
+        <button class="btn ghost" id="bPrev" aria-label="Previous">‹</button>
+        <button class="btn" id="bPlay">Pause</button>
+        <button class="btn ghost" id="bNext" aria-label="Next">›</button>
+      </div>
+      <div class="seg" role="group" aria-label="Scenario" id="seg" hidden>
+        <button id="bToday" aria-pressed="false" data-t="today">Today</button>
+        <button id="bDream" aria-pressed="true">2035</button>
+      </div>
+    </div>
+    <div class="src" data-t="src">Map, network and heat pump location are schematic. KPIs: Guro Goes Green final report (KTH, 2026), Dare to Dream scenario.</div>
   </div>
-  <footer>Prepared by Rafa for the GGG group. Numbers: final report, Dare to Dream scenario (final energy 4,397 → 3,476 GWh; CO₂ 857 → 491 kt; PM2.5 23.0 → 18.2 µg/m³; EV charging 1,508 MW; heat network ×4.9). EV transition subsidy: Seoul Metropolitan Government, 2026.</footer>
-</section>
+
 </div>
 
 <script>
-window.addEventListener("error",function(e){var d=document.getElementById("errbox");if(d){d.hidden=false;d.textContent="Script error: "+e.message;}});
 (function(){
-const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-const C = {green:'#2b8a57', heat:'#e07a2c', volt:'#2b78c9', concrete:'#9aa29d', ink:'#17201b'};
+"use strict";
+const $ = id => document.getElementById(id);
+const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
+/* ---------------- text ---------------- */
+const T = {
+ en:{
+  sub:"Guro Twin · KTH Group 6", tip:"Tap a street to open it", kE:"Final energy", kC:"CO₂ emissions", kP:"PM2.5",
+  today:"Today", src:"Map, network and heat pump location are schematic. KPIs: Guro Goes Green final report (KTH, 2026), Dare to Dream scenario.",
+  badge0:"2026 · Guro today", badge1:"2035 · Dare to Dream",
+  play:"Play", pause:"Pause", replay:"Replay",
+  close:"Close", digK:"Dig once", digH:"One excavation, two networks",
+  xHP:"heat pump", xCh:"curb chargers", xWarm:"warm", xCool:"cool", xPipes:"5GDHC heat pipes (larger diameter)",
+  xPow:"EV power cables", xPow2:"in a shared conduit", xData:"smart-charging data", xOne:"ONE excavation · heat utility + KEPCO",
+  r1:"Heat network", r1v:"4.9× today", r2:"EV charging power", r3:"Excavation, road closures", r3v:"shared",
+  appK:"Guro Smart City app", a1:"Your green points", a2:"550 points to a free month of charging", a3:"Swap your old car", a3v:"ICE → EV",
+  a4:"Seoul EV transition subsidy", a5:"Green Move bonus, EV only", a5v:"+ charging credit", a6:"Curb charger · G-Valley 3", a6v:"free now",
+  a7:"Book a slot", a7done:"Booked 19:00–21:00 · +40 points",
+  pK:"Next step for Guro", pH:"Start with one street", pNum:"1 street · 1 trench",
+  pP:"Pair the next district-heating extension in G-Valley with curb chargers laid in the same trench. One pilot shows:",
+  pL1:"Who pays what: heat utility, KEPCO, Guro-gu", pL2:"Days of road works saved", pL3:"How residents use the curb chargers",
+  pR1:"Dare to Dream investment", pR2:"Sewage heat pump case", pR3:"Discounted payback", pR3v:"~12 years",
+  pC:"Talk to us at the poster", pC2:"Guro Goes Green · KTH Royal Institute of Technology · Group 6", explore:"Explore the map yourself",
+  lGV:"G-Valley", lRes:"Residential", lAny:"Anyangcheon", lHP:"Sewage heat pump", lOff:"Guro-gu Office", lStn:"Guro Digital Complex",
+  steps:[
+   {h:"Guro today", p:"Ageing apartments heated by gas boilers, heavy G-Valley traffic, and PM2.5 at 23 µg/m³."},
+   {h:"Dare to Dream, 2035", p:"Heat from Guro's sewage water, upgraded by a heat pump, feeds a 5th-generation heat network. Rooftop solar and 85% electric cars do the rest."},
+   {h:"Dig once", p:"The streets open anyway for the heat network. EV charging cables go into the same trench: one excavation, two networks."},
+   {h:"Residents join in", p:"The Green Move Guro app books curb chargers and rewards switching from a combustion car to an EV, on top of Seoul's subsidy."},
+   {h:"Start with one street", p:"A pilot in G-Valley: the next heat-network extension and curb chargers, built in one trench."}
+  ],
+  freeH:"Explore Guro", freeP:"Switch between today and 2035, and tap any street to open it."
+ },
+ ko:{
+  sub:"구로 트윈 · KTH 6조", tip:"거리를 눌러 열어보세요", kE:"최종 에너지", kC:"CO₂ 배출량", kP:"초미세먼지",
+  today:"현재", src:"지도, 배관망, 히트펌프 위치는 개략도입니다. 지표 수치: Guro Goes Green 최종 보고서(KTH, 2026), Dare to Dream 시나리오.",
+  badge0:"2026 · 오늘의 구로", badge1:"2035 · Dare to Dream",
+  play:"재생", pause:"일시정지", replay:"다시 보기",
+  close:"닫기", digK:"굴착은 한 번", digH:"한 번의 굴착, 두 개의 네트워크",
+  xHP:"히트펌프", xCh:"도로변 충전기", xWarm:"온수관", xCool:"냉수관", xPipes:"5세대 지역난방 배관 (대구경)",
+  xPow:"전기차 전력 케이블", xPow2:"공용 관로 내", xData:"스마트 충전 데이터선", xOne:"굴착은 한 번 · 지역난방 사업자 + 한전",
+  r1:"지역난방망", r1v:"현재의 4.9배", r2:"전기차 충전 용량", r3:"굴착 · 도로 통제", r3v:"공동 시행",
+  appK:"구로 스마트시티 앱", a1:"나의 그린 포인트", a2:"550포인트 더 모으면 1개월 무료 충전", a3:"내연기관차를 전기차로", a3v:"내연기관 → 전기차",
+  a4:"서울시 전기차 전환지원금", a5:"그린무브 보너스 (전기차 한정)", a5v:"+ 충전 크레딧", a6:"도로변 충전기 · G밸리 3", a6v:"사용 가능",
+  a7:"충전 예약하기", a7done:"19:00–21:00 예약 완료 · +40포인트",
+  pK:"구로의 다음 단계", pH:"한 거리부터 시작합니다", pNum:"거리 하나 · 굴착 한 번",
+  pP:"G밸리의 다음 지역난방 확장 공사에 같은 굴착 구간으로 도로변 충전기를 함께 설치합니다. 시범 사업 하나로 확인할 수 있는 것:",
+  pL1:"비용 분담: 지역난방 사업자, 한전, 구로구", pL2:"단축되는 도로 공사 기간", pL3:"주민들의 도로변 충전기 이용 방식",
+  pR1:"Dare to Dream 총 투자비", pR2:"하수열 히트펌프 사례", pR3:"할인 회수기간", pR3v:"약 12년",
+  pC:"포스터 앞에서 저희와 이야기해 주세요", pC2:"Guro Goes Green · KTH 왕립공과대학교 · 6조", explore:"지도 직접 둘러보기",
+  lGV:"G밸리", lRes:"주거지역", lAny:"안양천", lHP:"하수열 히트펌프", lOff:"구로구청", lStn:"구로디지털단지",
+  steps:[
+   {h:"오늘의 구로", p:"가스보일러로 난방하는 노후 아파트, G밸리의 극심한 교통량, 그리고 23 µg/m³의 초미세먼지."},
+   {h:"Dare to Dream, 2035", p:"하수열을 히트펌프로 끌어올려 5세대 지역난방망에 공급합니다. 옥상 태양광과 85% 전기차 전환이 나머지를 채웁니다."},
+   {h:"굴착은 한 번", p:"어차피 지역난방 공사로 도로를 엽니다. 같은 굴착 구간에 전기차 충전 케이블을 함께 묻습니다. 한 번의 굴착, 두 개의 네트워크."},
+   {h:"주민이 함께합니다", p:"그린무브 구로 앱으로 도로변 충전기를 예약하고, 서울시 지원금에 더해 내연기관차에서 전기차로 바꾸면 보상을 받습니다."},
+   {h:"한 거리부터 시작합니다", p:"G밸리 시범 사업: 다음 지역난방 확장 공사와 도로변 충전기를 한 번의 굴착으로 함께 시공합니다."}
+  ],
+  freeH:"구로 둘러보기", freeP:"현재와 2035년을 전환하고, 거리를 눌러 열어보세요."
+ }
+};
+let lang = 'en';
+const hash = (location.hash||'').replace('#','');
+const kiosk = hash.indexOf('kiosk') === 0;
+if (hash.endsWith('ko') || (!hash.endsWith('en') && /^ko\b/i.test(navigator.language||''))) lang = 'ko';
+if (kiosk) document.documentElement.classList.add('kiosk');
 
-/* ---------- placeholder QR ---------- */
-(function(){
-  const q = document.getElementById('qr'), g = q.getContext('2d');
-  g.fillStyle='#fff'; g.fillRect(0,0,25,25); g.fillStyle=C.ink;
-  let s = 7;
-  const rnd = ()=>{ s = (s*9301+49297)%233280; return s/233280; };
-  for(let y=0;y<25;y++)for(let x=0;x<25;x++){ if(rnd()>.52) g.fillRect(x,y,1,1); }
-  [[0,0],[18,0],[0,18]].forEach(([x,y])=>{ g.fillStyle=C.ink; g.fillRect(x,y,7,7); g.fillStyle='#fff'; g.fillRect(x+1,y+1,5,5); g.fillStyle=C.ink; g.fillRect(x+2,y+2,3,3); });
-})();
+function applyLang(){
+  document.documentElement.lang = lang;
+  $('lEN').setAttribute('aria-pressed', lang==='en'); $('lKO').setAttribute('aria-pressed', lang==='ko');
+  document.querySelectorAll('[data-t]').forEach(el=>{ const v = T[lang][el.getAttribute('data-t')]; if (v!=null) el.textContent = v; });
+  renderStep(); updateBadge();
+  if (booked) $('bBook').textContent = T[lang].a7done;
+}
 
-/* ---------- isometric city ---------- */
-const cv = document.getElementById('city'), ctx = cv.getContext('2d');
-const N = 16;                          // grid size
+/* ---------------- city ---------------- */
+const cv = $('city'), ctx = cv.getContext('2d');
+const N = 16;
 let seed = 42; const rand = ()=>{ seed=(seed*16807)%2147483647; return (seed-1)/2147483646; };
 const isRoad = (i,j)=> i%4===0 || j%4===0;
-const riverAt = (i,j)=> Math.abs(j - (i*0.55 + 4.2)) < 0.9;   // Anyangcheon stream, diagonal
+const riverAt = (i,j)=> Math.abs(j - (i*0.55 + 4.2)) < 0.9;
 const cells = [];
-for(let i=0;i<N;i++)for(let j=0;j<N;j++){
-  const road = isRoad(i,j), river = riverAt(i,j);
-  const east = j < i*0.55 + 4.2;       // G-Valley side
-  const h = road||river ? 0 : (east ? 1.2 + rand()*3.2 : 0.8 + rand()*2.2 + (rand()>.8?2.5:0));
-  cells.push({i,j,road,river,east,h,green:rand(), pv:rand()>.45});
+for (let i=0;i<N;i++) for (let j=0;j<N;j++){
+  const road=isRoad(i,j), river=riverAt(i,j), east = j < i*0.55+4.2;
+  const h = road||river ? 0 : (east ? 1.2+rand()*3.2 : 0.8+rand()*2.2+(rand()>.8?2.5:0));
+  cells.push({i,j,road,river,east,h,g:rand(),pv:rand()>.45});
 }
-const hp = {i:9, j:9};                  // sewage heat pump site (illustrative)
-let t = 0, target = 0, open = 0, openTarget = 0, tapCell = null, last = 0, time = 0;
-
-function size(){
-  const r = cv.getBoundingClientRect(), d = window.devicePixelRatio||1;
-  cv.width = r.width*d; cv.height = r.height*d; ctx.setTransform(d,0,0,d,0,0);
-}
-function geom(){
-  const w = cv.width/(window.devicePixelRatio||1), h = cv.height/(window.devicePixelRatio||1);
-  const tw = Math.min(w*1.08/N, h/(N*0.58)); // tile width
-  return {w,h,tw,th:tw/2,ox:w/2,oy:Math.max(tw*2.2,(h - N*tw/2)/2 + tw*0.9)};
-}
-function iso(i,j,z,g){ return [g.ox + (i-j)*g.tw/2, g.oy + (i+j)*g.th/2 - z*g.th]; }
-const mix=(a,b,k)=>{ const pa=parseInt(a.slice(1),16), pb=parseInt(b.slice(1),16);
-  const r=Math.round(((pa>>16)&255)*(1-k)+((pb>>16)&255)*k), gg=Math.round(((pa>>8)&255)*(1-k)+((pb>>8)&255)*k), bl=Math.round((pa&255)*(1-k)+(pb&255)*k);
-  return `rgb(${r},${gg},${bl})`; };
-function shade(rgb,f){ const m=rgb.match(/\d+/g).map(Number); return `rgb(${m.map(v=>Math.round(v*f)).join(',')})`; }
-
-function poly(pts,fill,stroke){ ctx.beginPath(); pts.forEach((p,k)=>k?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); ctx.fillStyle=fill; ctx.fill(); if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.6;ctx.stroke();} }
+const LM = { hp:{i:9.5,j:9.5}, gv:{i:13,j:2.6}, res:{i:3.5,j:12.5}, any:{i:11.2,j:10.6}, off:{i:5.5,j:7.5}, stn:{i:15.2,j:10.5} };
+let t=0, target=0, open=0, openTarget=0, tapCell=null, last=0, time=0;
+let W=0,H=0;
+function size(){ const r=cv.getBoundingClientRect(), d=Math.min(2,window.devicePixelRatio||1); W=r.width; H=r.height; cv.width=W*d; cv.height=H*d; ctx.setTransform(d,0,0,d,0,0); }
+function geom(){ const tw=Math.min(W*1.06/N, H/(N*0.6)); return {tw, th:tw/2, ox:W/2, oy:Math.max(tw*2.4,(H-N*tw/2)/2+tw*1.1)}; }
+const iso=(i,j,z,g)=>[g.ox+(i-j)*g.tw/2, g.oy+(i+j)*g.th/2 - z*g.th];
+const hex=c=>[parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)];
+const mix=(a,b,k)=>{ const A=hex(a),B=hex(b); return 'rgb('+A.map((v,x)=>Math.round(v*(1-k)+B[x]*k)).join(',')+')'; };
+const shade=(rgb,f)=>'rgb('+rgb.match(/\d+/g).map(v=>Math.round(v*f)).join(',')+')';
+function poly(p,fill){ ctx.beginPath(); p.forEach((q,k)=>k?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1])); ctx.closePath(); ctx.fillStyle=fill; ctx.fill(); }
+function label(txt,x,y,color,bold){ ctx.font=(bold?'700 ':'600 ')+'11px "IBM Plex Sans","Noto Sans KR",sans-serif'; ctx.textAlign='center';
+  ctx.lineWidth=3; ctx.strokeStyle='rgba(255,255,255,.85)'; ctx.strokeText(txt,x,y); ctx.fillStyle=color; ctx.fillText(txt,x,y); }
 
 function draw(){
-  const g = geom();
-  ctx.clearRect(0,0,g.w,g.h);
-  ctx.fillStyle = mix('#dfe2de','#e3efe6',t); ctx.fillRect(0,0,g.w,g.h);
-  // ground tiles
+  const g=geom(), L=T[lang];
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle=mix('#dfe2de','#e2efe5',t); ctx.fillRect(0,0,W,H);
   cells.forEach(c=>{
-    const p = [iso(c.i,c.j,0,g),iso(c.i+1,c.j,0,g),iso(c.i+1,c.j+1,0,g),iso(c.i,c.j+1,0,g)];
-    let col = c.river ? mix('#9fb3bd','#7fb6cf',t) : c.road ? '#c4c9c5' : mix('#cfd3cf','#cfe2d3',t);
-    poly(p,col);
+    const p=[iso(c.i,c.j,0,g),iso(c.i+1,c.j,0,g),iso(c.i+1,c.j+1,0,g),iso(c.i,c.j+1,0,g)];
+    poly(p, c.river ? mix('#9fb3bd','#7fb6cf',t) : c.road ? '#c4c9c5' : mix('#cfd3cf','#cfe2d3',t));
   });
-  // heat network along roads (Dare to Dream)
-  if(t>0.02){
-    ctx.save(); ctx.globalAlpha = t; ctx.strokeStyle=C.heat; ctx.lineWidth = Math.max(2,g.tw*0.12); ctx.lineCap='round';
-    ctx.setLineDash([g.tw*0.5, g.tw*0.3]); ctx.lineDashOffset = -time*0.03;
-    for(let k=4;k<N;k+=4){
-      ctx.beginPath(); let a=iso(k,0.5,0,g), b=iso(k,N-0.5,0,g); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
-      ctx.beginPath(); a=iso(0.5,k,0,g); b=iso(N-0.5,k,0,g); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+  if (t>0.02){
+    ctx.save(); ctx.globalAlpha=t; ctx.strokeStyle='#e07a2c'; ctx.lineWidth=Math.max(2,g.tw*0.13); ctx.lineCap='round';
+    if(!reduce){ ctx.setLineDash([g.tw*0.5,g.tw*0.3]); ctx.lineDashOffset=-time*0.03; }
+    for (let k=4;k<N;k+=4){
+      let a=iso(k,0.5,0,g), b=iso(k,N-0.5,0,g); ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+      a=iso(0.5,k,0,g); b=iso(N-0.5,k,0,g); ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
     }
     ctx.restore();
   }
-  // opened street highlight
-  if(tapCell && open>0.01){
-    const c=tapCell, p=[iso(c.i,c.j,0,g),iso(c.i+1,c.j,0,g),iso(c.i+1,c.j+1,0,g),iso(c.i,c.j+1,0,g)];
-    ctx.save(); ctx.globalAlpha=open; poly(p,'#a8916d'); ctx.restore();
-  }
-  // buildings (painter's order)
-  const order = cells.filter(c=>c.h>0).sort((a,b)=>(a.i+a.j)-(b.i+b.j));
-  order.forEach(c=>{
-    const z=c.h, inset=.12, i0=c.i+inset, j0=c.j+inset, i1=c.i+1-inset, j1=c.j+1-inset;
-    const base = c.east ? mix('#a9aeb6', C.green, t*(0.55+c.green*0.45)) : mix(C.concrete, '#4fa874', t*(0.6+c.green*0.4));
+  if (tapCell && open>0.01){ const c=tapCell; ctx.save(); ctx.globalAlpha=open;
+    poly([iso(c.i,c.j,0,g),iso(c.i+1,c.j,0,g),iso(c.i+1,c.j+1,0,g),iso(c.i,c.j+1,0,g)],'#a8916d'); ctx.restore(); }
+  cells.filter(c=>c.h>0).sort((a,b)=>(a.i+a.j)-(b.i+b.j)).forEach(c=>{
+    const z=c.h, m=.12, i0=c.i+m, j0=c.j+m, i1=c.i+1-m, j1=c.j+1-m;
+    const base = c.east ? mix('#a9aeb6','#2b8a57',t*(0.55+c.g*0.45)) : mix('#9aa29d','#4fa874',t*(0.6+c.g*0.4));
     poly([iso(i1,j0,0,g),iso(i1,j1,0,g),iso(i1,j1,z,g),iso(i1,j0,z,g)], shade(base,.82));
     poly([iso(i0,j1,0,g),iso(i1,j1,0,g),iso(i1,j1,z,g),iso(i0,j1,z,g)], shade(base,.68));
     poly([iso(i0,j0,z,g),iso(i1,j0,z,g),iso(i1,j1,z,g),iso(i0,j1,z,g)], base);
-    if(c.pv && t>0.05){ // rooftop PV / PVT
-      const m=.22; ctx.save(); ctx.globalAlpha=t;
-      poly([iso(i0+m,j0+m,z,g),iso(i1-m,j0+m,z,g),iso(i1-m,j1-m,z,g),iso(i0+m,j1-m,z,g)], '#2f4f73'); ctx.restore();
-    }
+    if (c.pv && t>0.05){ const q=.22; ctx.save(); ctx.globalAlpha=t;
+      poly([iso(i0+q,j0+q,z,g),iso(i1-q,j0+q,z,g),iso(i1-q,j1-q,z,g),iso(i0+q,j1-q,z,g)],'#2f4f73'); ctx.restore(); }
   });
-  // sewage heat pump marker
-  { const [x,y]=iso(hp.i+.5,hp.j+.5,1.2,g), r=g.tw*0.35*(1+0.15*Math.sin(time/300));
-    ctx.save(); ctx.globalAlpha=t; ctx.fillStyle=C.heat; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
-    ctx.globalAlpha=t*.25; ctx.beginPath(); ctx.arc(x,y,r*2.1,0,7); ctx.fill(); ctx.restore();
-    if(t>.6){ ctx.save(); ctx.globalAlpha=(t-.6)/.4; ctx.font='600 10px IBM Plex Sans, sans-serif'; ctx.fillStyle=C.ink; ctx.textAlign='center';
-      ctx.fillText('sewage heat pump',x,y-r*2.4); ctx.restore(); } }
-  // EV chargers on roads
-  if(t>0.05){ ctx.save(); ctx.globalAlpha=t; ctx.fillStyle=C.volt;
-    for(let k=4;k<N;k+=4) for(let m=2;m<N;m+=3){ const [x,y]=iso(k+.15,m+.5,0,g); ctx.fillRect(x-2,y-6,4,6); }
+  if (t>0.05){ ctx.save(); ctx.globalAlpha=t; ctx.fillStyle='#2b78c9';
+    for (let k=4;k<N;k+=4) for (let m=2;m<N;m+=3){ const [x,y]=iso(k+.15,m+.5,0,g); ctx.fillRect(x-2,y-6,4,6); }
     ctx.restore(); }
-  // PM2.5 haze
-  const pm = 23.0 + (18.2-23.0)*t, haze = (pm-12)/40;
-  ctx.save(); ctx.globalAlpha = haze; const grd = ctx.createLinearGradient(0,0,0,g.h);
-  grd.addColorStop(0,'#8a8067'); grd.addColorStop(1,'rgba(138,128,103,0.2)'); ctx.fillStyle=grd; ctx.fillRect(0,0,g.w,g.h); ctx.restore();
-  // labels
-  ctx.save(); ctx.font='600 10px IBM Plex Sans, sans-serif'; ctx.fillStyle='rgba(23,32,27,.7)'; ctx.textAlign='center';
-  let [lx,ly]=iso(13,3,0,g); ctx.fillText('G-Valley',lx,ly); [lx,ly]=iso(4,13,0,g); ctx.fillText('residential',lx,ly);
-  [lx,ly]=iso(11,10.4,0,g); ctx.fillStyle='rgba(43,120,201,.8)'; ctx.fillText('Anyangcheon',lx,ly); ctx.restore();
+  { const [x,y]=iso(LM.hp.i,LM.hp.j,1.2,g), r=g.tw*0.35*(1+(reduce?0:0.15*Math.sin(time/300)));
+    ctx.save(); ctx.globalAlpha=t; ctx.fillStyle='#e07a2c'; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+    ctx.globalAlpha=t*.25; ctx.beginPath(); ctx.arc(x,y,r*2.1,0,7); ctx.fill(); ctx.restore();
+    if (t>.6){ ctx.save(); ctx.globalAlpha=(t-.6)/.4; label(L.lHP,x,y-r*2.4,'#b4581a',true); ctx.restore(); } }
+  const pm=23+(18.2-23)*t, haze=(pm-12)/40;
+  ctx.save(); ctx.globalAlpha=haze; const grd=ctx.createLinearGradient(0,0,0,H);
+  grd.addColorStop(0,'#8a8067'); grd.addColorStop(1,'rgba(138,128,103,0.2)'); ctx.fillStyle=grd; ctx.fillRect(0,0,W,H); ctx.restore();
+  let p;
+  p=iso(LM.gv.i,LM.gv.j,0,g); label(L.lGV,p[0],p[1],'#16201a',true);
+  p=iso(LM.res.i,LM.res.j,0,g); label(L.lRes,p[0],p[1],'#16201a',true);
+  p=iso(LM.any.i,LM.any.j,0,g); label(L.lAny,p[0],p[1],'#2b78c9',false);
+  p=iso(LM.stn.i,LM.stn.j,0,g); label('▲ '+L.lStn,p[0],p[1],'#5b665f',false);
 }
 
-function fmt(n,d){ return n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
-function updateKPIs(){
-  const E=4397+(3476-4397)*t, Cc=857+(491-857)*t, P=23.0+(18.2-23.0)*t;
-  kE.textContent=fmt(E,0); kC.textContent=fmt(Cc,0); kP.textContent=fmt(P,1);
-  dE.textContent = t>.02 ? '−'+fmt((1-E/4397)*100,1)+'%' : '';
-  dC.textContent = t>.999 ? '−42.6%' : t>.02 ? '−'+fmt((1-Cc/857)*100,1)+'%' : '';
-  dP.textContent = t>.02 ? '−'+fmt((1-P/23)*100,1)+'%' : '';
+/* ---------------- KPIs ---------------- */
+const fmt=(n,d)=>n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+function kpis(){
+  const E=4397+(3476-4397)*t, C=857+(491-857)*t, P=23+(18.2-23)*t;
+  $('kE').textContent=fmt(E,0); $('kC').textContent=fmt(C,0); $('kP').textContent=fmt(P,1);
+  const done=t>.999, on=t>.02;
+  $('dE').textContent = done?'−20.9%': on?'−'+fmt((1-E/4397)*100,1)+'%':'';
+  $('dC').textContent = done?'−42.6%': on?'−'+fmt((1-C/857)*100,1)+'%':'';
+  $('dP').textContent = done?'−20.9%': on?'−'+fmt((1-P/23)*100,1)+'%':'';
 }
-const kE=document.getElementById('kE'),kC=document.getElementById('kC'),kP=document.getElementById('kP'),
-      dE=document.getElementById('dE'),dC=document.getElementById('dC'),dP=document.getElementById('dP');
+function updateBadge(){ const d=target>0.5; $('badge').classList.toggle('dream',d); $('badgeTxt').textContent = d?T[lang].badge1:T[lang].badge0; }
 
-function loop(ts){
-  const dt = Math.min(64, ts-(last||ts)); last=ts; time+=dt;
-  const sp = reduce ? 1 : dt/900;
-  t += Math.sign(target-t)*Math.min(Math.abs(target-t), sp);
-  open += Math.sign(openTarget-open)*Math.min(Math.abs(openTarget-open), reduce?1:dt/400);
-  draw(); updateKPIs();
-  requestAnimationFrame(loop);
+/* ---------------- story ---------------- */
+const DUR=[6000,9000,11000,10000,12000];   // ~48 s, plus reading time on the pilot
+let step=0, playing=!reduce || kiosk, elapsed=0, free=false, booked=false;
+const sheets={dig:$('shDig'),app:$('shApp'),pilot:$('shPilot')};
+function sheet(name){ Object.entries(sheets).forEach(([k,s])=>{ const on=k===name; s.classList.toggle('open',on); s.setAttribute('aria-hidden',!on); }); }
+function setScenario(d){ target=d?1:0; $('bToday').setAttribute('aria-pressed',!d); $('bDream').setAttribute('aria-pressed',d); updateBadge(); }
+function openStreet(cell){ tapCell=cell||{i:8,j:6}; openTarget=1; }
+function renderStep(){
+  const L=T[lang];
+  if (free){ $('sK').textContent='★'; $('sH').textContent=L.freeH; $('sP').textContent=L.freeP; }
+  else { const s=L.steps[step]; $('sK').textContent=(step+1)+' / 5'; $('sH').textContent=s.h; $('sP').textContent=s.p; }
+  $('bPlay').textContent = free ? L.replay : (playing?L.pause:L.play);
+  $('seg').hidden = !free;
+  $('bPrev').hidden = free; $('bNext').hidden = free;
 }
+function goStep(n){
+  free=false; step=Math.max(0,Math.min(4,n)); elapsed=0;
+  openTarget=0; sheet(null); $('maptip').classList.remove('show');
+  if (step===0) setScenario(false);
+  if (step>=1) setScenario(true);
+  if (step===2){ setTimeout(()=>{ if(step===2&&!free){ openStreet(); setTimeout(()=>{ if(step===2&&!free) sheet('dig'); }, reduce?0:500); } }, reduce?0:900); }
+  if (step===3) setTimeout(()=>{ if(step===3&&!free) sheet('app'); }, reduce?0:500);
+  if (step===4) setTimeout(()=>{ if(step===4&&!free) sheet('pilot'); }, reduce?0:500);
+  renderStep(); progress();
+}
+function progress(){
+  document.querySelectorAll('.prog i').forEach((el,k)=>{
+    el.style.width = free ? '100%' : k<step ? '100%' : k>step ? '0%' : Math.min(100,elapsed/DUR[step]*100)+'%';
+  });
+}
+function goFree(){ free=true; playing=false; sheet(null); openTarget=0; setScenario(true); renderStep(); progress();
+  $('maptip').classList.add('show'); setTimeout(()=>$('maptip').classList.remove('show'),4000); }
 
-/* ---------- UI ---------- */
-const bToday=document.getElementById('bToday'), bDream=document.getElementById('bDream'),
-      hint=document.getElementById('hint'), year=document.getElementById('yearLabel'),
-      sheetDig=document.getElementById('sheetDig'), sheetApp=document.getElementById('sheetApp');
-function setScenario(d){
-  target = d?1:0; bToday.setAttribute('aria-pressed',!d); bDream.setAttribute('aria-pressed',d);
-  year.textContent = d ? '2035 · Dare to Dream' : '2026 · today';
-  hint.textContent = d ? 'Tap a street to open it' : 'Switch to Dare to Dream, then tap a street';
-}
-function showSheet(s, on){ s.classList.toggle('open',on); s.setAttribute('aria-hidden',!on); }
-function closeAll(){ showSheet(sheetDig,false); showSheet(sheetApp,false); openTarget=0; }
-function openStreet(cell){
-  tapCell = cell || {i:8,j:6}; openTarget=1;
-  setTimeout(()=>showSheet(sheetDig,true), reduce?0:350);
-}
-function setStep(n){
-  document.querySelectorAll('.step').forEach(s=>s.classList.toggle('active', +s.dataset.step===n));
-  closeAll();
-  if(n===1) setScenario(false);
-  if(n>=2) setScenario(true);
-  if(n===3) setTimeout(()=>openStreet(), reduce?0:700);
-  if(n===4){ setTimeout(()=>showSheet(sheetApp,true), reduce?0:500); }
-}
-bToday.onclick=()=>setStep(1); bDream.onclick=()=>setStep(2);
-document.querySelectorAll('.step').forEach(s=>s.onclick=()=>setStep(+s.dataset.step));
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{ closeAll(); });
-document.getElementById('toApp').onclick=()=>{ showSheet(sheetDig,false); showSheet(sheetApp,true);
-  document.querySelectorAll('.step').forEach(s=>s.classList.toggle('active', s.dataset.step==='4')); };
-document.getElementById('bookBtn').onclick=function(){ this.textContent='Booked · 19:00–21:00 · +40 points'; this.classList.add('green');
-  const p=document.getElementById('pts'); p.textContent='2,490'; };
+$('bNext').onclick=()=>{ if(step<4) goStep(step+1); else goFree(); };
+$('bPrev').onclick=()=>goStep(step-1);
+$('bPlay').onclick=()=>{ if(free){ playing=true; goStep(0); return; } playing=!playing; renderStep(); };
+$('bToday').onclick=()=>{ setScenario(false); sheet(null); openTarget=0; };
+$('bDream').onclick=()=>setScenario(true);
+$('bExplore').onclick=goFree;
+$('bBook').onclick=function(){ booked=true; this.textContent=T[lang].a7done; $('pts').textContent='2,490'; };
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{ sheet(null); openTarget=0; if(!free){ playing=false; renderStep(); } });
+$('lEN').onclick=()=>{ lang='en'; applyLang(); };
+$('lKO').onclick=()=>{ lang='ko'; applyLang(); };
 
-cv.addEventListener('click', e=>{
-  if(target<1){ setStep(2); return; }
+cv.addEventListener('click',e=>{
+  if (!free){ playing=false; goFree(); }
+  if (target<1){ setScenario(true); return; }
   const r=cv.getBoundingClientRect(), g=geom(), x=e.clientX-r.left-g.ox, y=e.clientY-r.top-g.oy;
-  const a = x/(g.tw/2), b = y/(g.th/2); const i=Math.floor((a+b)/2), j=Math.floor((b-a)/2);
-  const c = cells.find(c=>c.i===i&&c.j===j);
-  const cell = (c && c.road) ? c : {i:Math.round(i/4)*4 || 4, j:Math.max(0,Math.min(N-1,j))};
-  document.querySelectorAll('.step').forEach(s=>s.classList.toggle('active', s.dataset.step==='3'));
-  openStreet(cell);
+  const a=x/(g.tw/2), b=y/(g.th/2), i=Math.floor((a+b)/2), j=Math.floor((b-a)/2);
+  if (i<0||j<0||i>=N||j>=N) return;
+  const c=cells.find(c=>c.i===i&&c.j===j);
+  const cell=(c&&c.road)?c:{i:Math.max(4,Math.min(12,Math.round(i/4)*4)), j:Math.max(0,Math.min(N-1,j))};
+  openStreet(cell); setTimeout(()=>sheet('dig'), reduce?0:450);
 });
 
+/* ---------------- loop ---------------- */
+function loop(ts){
+  const dt=Math.min(64, ts-(last||ts)); last=ts; time+=dt;
+  t += Math.sign(target-t)*Math.min(Math.abs(target-t), reduce?1:dt/1100);
+  open += Math.sign(openTarget-open)*Math.min(Math.abs(openTarget-open), reduce?1:dt/400);
+  if (playing && !free){
+    elapsed+=dt; progress();
+    if (elapsed>=DUR[step]){ if(step<4) goStep(step+1); else if(kiosk) goStep(0); else { playing=false; renderStep(); } }
+  }
+  draw(); kpis();
+  requestAnimationFrame(loop);
+}
 window.addEventListener('resize', size);
-size(); requestAnimationFrame(loop);
+size(); applyLang(); goStep(0);
+requestAnimationFrame(loop);
+
+/* offline after first load (GitHub Pages only) */
+if ('serviceWorker' in navigator && location.protocol==='https:' && location.hostname.endsWith('github.io')){
+  try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
+}
 })();
 </script>
 </body>
