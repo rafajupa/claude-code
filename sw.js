@@ -1,5 +1,5 @@
 // Keeps Guro Twin working if the event Wi-Fi drops after the first visit.
-const CACHE = 'guro-twin-v5';
+const CACHE = 'guro-twin-v6';
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).then(() => self.skipWaiting()));
 });
