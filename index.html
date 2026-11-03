@@ -66,6 +66,42 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 .pulse{width:18px;height:18px;border-radius:50%;background:#e07a2c;box-shadow:0 0 0 0 rgba(224,122,44,.6);animation:pl 1.8s infinite}
 @keyframes pl{to{box-shadow:0 0 0 18px rgba(224,122,44,0)}}
 .maplibregl-ctrl-attrib{font-size:9px}
+#pmc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.aq{position:absolute;right:10px;top:6px;z-index:3;width:164px;background:rgba(255,255,255,.94);border-radius:14px;padding:8px 10px 9px;box-shadow:0 4px 14px -6px rgba(0,0,0,.35);display:grid;gap:5px;pointer-events:none}
+.aq-top{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.aq-lab{font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.03em;text-transform:uppercase}
+html[lang="ko"] .aq-lab{letter-spacing:0}
+.aq-val{font-family:"Bricolage Grotesque",var(--display);font-weight:800;font-size:1.35rem;line-height:1;font-variant-numeric:tabular-nums}
+.aq-val small{font-family:var(--body);font-size:.58rem;font-weight:500;color:var(--muted);margin-left:2px}
+.aq-cat{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:99px;white-space:nowrap}
+.gauge{position:relative;height:30px;margin-top:2px}
+.gauge .track{position:absolute;left:0;right:0;top:9px;height:8px;border-radius:9px;background:linear-gradient(90deg,#3aa76d 0%,#3aa76d 16.6%,#e6c34a 16.6%,#e6c34a 50%,#e8913a 50%,#e8913a 75%,#d9573f 75%)}
+.gauge .tick{position:absolute;top:5px;width:1.5px;height:16px;background:#16201a}
+.gauge .tl{position:absolute;top:21px;font-size:.52rem;color:var(--muted);transform:translateX(-50%);white-space:nowrap}
+.gauge .mk{position:absolute;top:2px;width:3px;height:22px;border-radius:2px;background:#16201a;transform:translateX(-50%);box-shadow:0 0 0 2px #fff}
+.gauge .ghost{position:absolute;top:4px;width:2px;height:18px;background:#16201a;opacity:.35;transform:translateX(-50%);transition:opacity .6s}
+.mix{display:grid;gap:3px;font-size:.58rem;color:var(--muted)}
+.mix .r{display:grid;grid-template-columns:auto 1fr 24px;white-space:nowrap;align-items:center;gap:5px}
+.mix .b{display:block;height:6px;border-radius:9px;background:#eceeea;overflow:hidden}
+.mix .b i{display:block;height:100%;border-radius:9px}
+.mix .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.toast{position:absolute;left:50%;top:62%;transform:translate(-50%,-50%) scale(.9);z-index:4;background:rgba(22,32,26,.92);color:#fff;border-radius:18px;padding:12px 16px;display:grid;gap:4px;min-width:220px;opacity:0;transition:opacity .4s,transform .4s;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.toast b{font-family:"Bricolage Grotesque",var(--display);font-size:1rem}
+.toast .tr{display:flex;justify-content:space-between;gap:14px;font-size:.8rem}
+.toast .tr span:last-child{color:#8fe0b0;font-weight:700;font-variant-numeric:tabular-nums}
+.kbar{position:relative;height:5px;border-radius:9px;background:#e3e7e2;margin-top:3px;overflow:hidden}
+.kbar i{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:#8d958f;width:100%}
+.kpi.dream .kbar i{background:var(--green)}
+.mode{display:flex;background:#e4e8e3;border-radius:999px;padding:3px}
+.mode button{border:0;background:transparent;border-radius:999px;padding:5px 11px;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.mode button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.shead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.prog button{border:0;padding:6px 0;background:transparent;cursor:pointer}
+.prog button span{display:block;height:4px;border-radius:9px;background:#e3e7e2;overflow:hidden}
+.prog button span i{display:block;height:100%;width:0;background:var(--green)}
+.nav{display:flex;gap:6px}
+.btn.big{padding:10px 18px}
 .badge{position:absolute;z-index:2;left:12px;top:6px;font-size:.72rem;font-weight:600;background:rgba(255,255,255,.9);border-radius:999px;padding:4px 10px}
 .badge i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--concrete,#9aa29d);margin-right:6px;vertical-align:1px}
 .badge.dream i{background:var(--green)}
@@ -81,8 +117,6 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 
 .story{background:var(--card);margin:6px 12px 12px;border-radius:20px;padding:14px 16px 12px;display:grid;gap:8px;box-shadow:0 8px 24px -16px rgba(0,0,0,.35)}
 .prog{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
-.prog span{height:4px;border-radius:9px;background:#e3e7e2;overflow:hidden}
-.prog span i{display:block;height:100%;width:0;background:var(--green)}
 .story .kicker{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--green)}
 html[lang="ko"] .story .kicker{letter-spacing:0}
 .story h2{font-size:1.2rem}
@@ -127,7 +161,7 @@ html.kiosk .app{max-width:none;border:0;border-radius:0;height:100%}
 html.kiosk .story h2{font-size:1.7rem}
 html.kiosk .story p{font-size:1.1rem}
 html.kiosk .kpi .val{font-size:1.8rem}
-html.kiosk .lang, html.kiosk .ctrls{display:none}
+html.kiosk .lang, html.kiosk .ctrls, html.kiosk .mode{display:none}
 
 @media (prefers-reduced-motion:reduce){.sheet,.maptip{transition:none}}
 </style>
@@ -149,6 +183,30 @@ html.kiosk .lang, html.kiosk .ctrls{display:none}
     <canvas id="city" aria-label="Schematic isometric map of Guro-gu"></canvas>
     <div id="map" aria-label="Map of Guro-gu, Seoul"></div>
     <div id="haze"></div>
+    <canvas id="pmc" aria-hidden="true"></canvas>
+    <div class="aq" id="aq" aria-live="polite">
+      <div class="aq-top"><span class="aq-lab" data-t="aqLab">PM2.5 · annual mean</span></div>
+      <div class="aq-top"><span class="aq-val"><span id="aqV">23.0</span><small>µg/m³</small></span></div>
+      <div><span class="aq-cat" id="aqCat"></span></div>
+      <div class="gauge" aria-hidden="true">
+        <div class="track"></div>
+        <div class="tick" style="left:16.6%"></div><div class="tl" style="left:16.6%">WHO 5</div>
+        <div class="tick" style="left:50%"></div><div class="tl" style="left:50%" data-t="aqKr">Korea 15</div>
+        <div class="ghost" id="aqG" style="left:76.7%;opacity:0"></div>
+        <div class="mk" id="aqM" style="left:76.7%"></div>
+      </div>
+      <div class="mix">
+        <div class="r"><span data-t="aqLoc">Local sources</span><span class="b"><i id="aqLb" style="background:#9a6b45"></i></span><span class="v" id="aqLv">11.5</span></div>
+        <div class="r"><span data-t="aqBg">Background</span><span class="b"><i id="aqBb" style="background:#7d93a6"></i></span><span class="v" id="aqBv">11.5</span></div>
+      </div>
+    </div>
+    <div class="toast" id="toast" aria-live="polite">
+      <b data-t="tH">Dare to Dream vs today</b>
+      <div class="tr"><span data-t="kP">PM2.5</span><span>23.0 → 18.2 µg/m³</span></div>
+      <div class="tr"><span data-t="tLoc">Local PM2.5</span><span>−31.9%</span></div>
+      <div class="tr"><span data-t="kC">CO₂ emissions</span><span>−42.6%</span></div>
+      <div class="tr"><span data-t="kE">Final energy</span><span>−20.9%</span></div>
+    </div>
     <div class="badge" id="badge"><i></i><span id="badgeTxt">2026 · Guro today</span></div>
     <div class="maptip" id="maptip" data-t="tip">Tap a street to open it</div>
   <!-- Dig once -->
@@ -274,21 +332,29 @@ html.kiosk .lang, html.kiosk .ctrls{display:none}
   </div>
 
   <div class="kpis" aria-live="polite">
-    <div class="kpi"><span class="lab" data-t="kE">Final energy</span><span class="val" id="kE">4,397</span><span class="unit">GWh/yr</span><span class="delta" id="dE"></span></div>
-    <div class="kpi"><span class="lab" data-t="kC">CO₂ emissions</span><span class="val" id="kC">857</span><span class="unit">kt/yr</span><span class="delta" id="dC"></span></div>
-    <div class="kpi"><span class="lab" data-t="kP">PM2.5</span><span class="val" id="kP">23.0</span><span class="unit">µg/m³</span><span class="delta" id="dP"></span></div>
+    <div class="kpi"><span class="lab" data-t="kE">Final energy</span><span class="val" id="kE">4,397</span><span class="unit">GWh/yr</span><span class="delta" id="dE"></span><span class="kbar"><i id="bE"></i></span></div>
+    <div class="kpi"><span class="lab" data-t="kC">CO₂ emissions</span><span class="val" id="kC">857</span><span class="unit">kt/yr</span><span class="delta" id="dC"></span><span class="kbar"><i id="bC"></i></span></div>
+    <div class="kpi"><span class="lab" data-t="kP">PM2.5</span><span class="val" id="kP">23.0</span><span class="unit">µg/m³</span><span class="delta" id="dP"></span><span class="kbar"><i id="bP"></i></span></div>
   </div>
 
   <div class="story" id="story">
-    <div class="prog" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
-    <div class="kicker" id="sK">1 / 5</div>
+    <div class="prog" id="prog">
+      <button data-go="0" aria-label="Scene 1"><span><i></i></span></button><button data-go="1" aria-label="Scene 2"><span><i></i></span></button><button data-go="2" aria-label="Scene 3"><span><i></i></span></button><button data-go="3" aria-label="Scene 4"><span><i></i></span></button><button data-go="4" aria-label="Scene 5"><span><i></i></span></button>
+    </div>
+    <div class="shead">
+      <div class="kicker" id="sK">1 / 5</div>
+      <div class="mode" role="group" aria-label="Playback" id="modeSeg">
+        <button id="mAuto" aria-pressed="true" data-t="auto">Auto</button>
+        <button id="mMan" aria-pressed="false" data-t="manual">Manual</button>
+      </div>
+    </div>
     <h2 id="sH">Guro today</h2>
     <p id="sP"></p>
     <div class="ctrls">
-      <div style="display:flex;gap:6px">
-        <button class="btn ghost" id="bPrev" aria-label="Previous">‹</button>
-        <button class="btn" id="bPlay">Pause</button>
-        <button class="btn ghost" id="bNext" aria-label="Next">›</button>
+      <div class="nav">
+        <button class="btn ghost big" id="bPrev" data-t="back">‹ Back</button>
+        <button class="btn big" id="bNext" data-t="next">Next ›</button>
+        <button class="btn" id="bPlay" hidden>Replay</button>
       </div>
       <div class="seg" role="group" aria-label="Scenario" id="seg" hidden>
         <button id="bToday" aria-pressed="false" data-t="today">Today</button>
@@ -327,13 +393,16 @@ const T = {
   pC:"Talk to us at the poster", pC2:"Guro Goes Green · KTH Royal Institute of Technology · Group 6", explore:"Explore the map yourself",
   lGV:"G-Valley", lRes:"Residential", lAny:"Anyangcheon", lHP:"Sewage heat pump", lOff:"Guro-gu Office", lStn:"Guro Digital Complex",
   steps:[
-   {h:"Guro today", p:"Ageing apartments heated by gas boilers, heavy G-Valley traffic, and PM2.5 at 23 µg/m³."},
-   {h:"Dare to Dream, 2035", p:"Heat from Guro's sewage water, upgraded by a heat pump, feeds a 5th-generation heat network. Rooftop solar and 85% electric cars do the rest."},
+   {h:"Guro today", p:"Gas boilers in ageing apartments and heavy G-Valley traffic keep PM2.5 at 23 µg/m³: above Korea's 15 µg/m³ standard and 4.6× the WHO guideline."},
+   {h:"Dare to Dream, 2035", p:"Heat from Guro's sewage water, upgraded by a heat pump, feeds a 5th-generation heat network. Rooftop solar and 85% electric cars do the rest. Local PM2.5 from heating and traffic drops by 32%."},
    {h:"Dig once", p:"The streets open anyway for the heat network. EV charging cables go into the same trench: one excavation, two networks."},
    {h:"Residents join in", p:"The Green Move Guro app books curb chargers and rewards switching from a combustion car to an EV, on top of Seoul's subsidy."},
    {h:"Start with one street", p:"A pilot in G-Valley: the next heat-network extension and curb chargers, built in one trench."}
   ],
-  freeH:"Explore Guro", freeP:"Switch between today and 2035, and tap any street to open it."
+  freeH:"Explore Guro", freeP:"Switch between today and 2035, and tap any street to open it.",
+  auto:"Auto", manual:"Manual", back:"‹ Back", next:"Next ›", nextEnd:"Explore ›",
+  aqLab:"PM2.5 · annual mean", aqKr:"Korea 15", aqLoc:"Local sources", aqBg:"Background",
+  catBad:"Above Korea's standard", catOk:"Below Korea's standard", tH:"Dare to Dream vs today", tLoc:"Local PM2.5"
  },
  ko:{
   sub:"구로 트윈 · KTH 6조", tip:"거리를 눌러 열어보세요", kE:"최종 에너지", kC:"CO₂ 배출량", kP:"초미세먼지",
@@ -354,13 +423,16 @@ const T = {
   pC:"포스터 앞에서 저희와 이야기해 주세요", pC2:"Guro Goes Green · KTH 왕립공과대학교 · 6조", explore:"지도 직접 둘러보기",
   lGV:"G밸리", lRes:"주거지역", lAny:"안양천", lHP:"하수열 히트펌프", lOff:"구로구청", lStn:"구로디지털단지",
   steps:[
-   {h:"오늘의 구로", p:"가스보일러로 난방하는 노후 아파트, G밸리의 극심한 교통량, 그리고 23 µg/m³의 초미세먼지."},
-   {h:"Dare to Dream, 2035", p:"하수열을 히트펌프로 끌어올려 5세대 지역난방망에 공급합니다. 옥상 태양광과 85% 전기차 전환이 나머지를 채웁니다."},
+   {h:"오늘의 구로", p:"노후 아파트의 가스보일러와 G밸리의 극심한 교통량으로 초미세먼지가 연평균 23 µg/m³입니다. 국내 환경기준(15 µg/m³)을 넘고 WHO 권고치의 4.6배입니다."},
+   {h:"Dare to Dream, 2035", p:"하수열을 히트펌프로 끌어올려 5세대 지역난방망에 공급합니다. 옥상 태양광과 85% 전기차 전환이 나머지를 채웁니다. 난방과 교통에서 나오는 지역 초미세먼지는 32% 줄어듭니다."},
    {h:"굴착은 한 번", p:"어차피 지역난방 공사로 도로를 엽니다. 같은 굴착 구간에 전기차 충전 케이블을 함께 묻습니다. 한 번의 굴착, 두 개의 네트워크."},
    {h:"주민이 함께합니다", p:"그린무브 구로 앱으로 도로변 충전기를 예약하고, 서울시 지원금에 더해 내연기관차에서 전기차로 바꾸면 보상을 받습니다."},
    {h:"한 거리부터 시작합니다", p:"G밸리 시범 사업: 다음 지역난방 확장 공사와 도로변 충전기를 한 번의 굴착으로 함께 시공합니다."}
   ],
-  freeH:"구로 둘러보기", freeP:"현재와 2035년을 전환하고, 거리를 눌러 열어보세요."
+  freeH:"구로 둘러보기", freeP:"현재와 2035년을 전환하고, 거리를 눌러 열어보세요.",
+  auto:"자동", manual:"수동", back:"‹ 이전", next:"다음 ›", nextEnd:"둘러보기 ›",
+  aqLab:"초미세먼지 · 연평균", aqKr:"국내 기준 15", aqLoc:"지역 배출", aqBg:"외부 유입",
+  catBad:"국내 환경기준 초과", catOk:"국내 환경기준 이내", tH:"Dare to Dream vs 현재", tLoc:"지역 배출 초미세먼지"
  }
 };
 let lang = 'en';
@@ -457,23 +529,39 @@ function kpis(){
   $('dE').textContent = done?'−20.9%': on?'−'+fmt((1-E/4397)*100,1)+'%':'';
   $('dC').textContent = done?'−42.6%': on?'−'+fmt((1-C/857)*100,1)+'%':'';
   $('dP').textContent = done?'−20.9%': on?'−'+fmt((1-P/23)*100,1)+'%':'';
+  $('bE').style.width=(E/4397*100)+'%'; $('bC').style.width=(C/857*100)+'%'; $('bP').style.width=(P/23*100)+'%';
+  document.querySelectorAll('.kpi').forEach(k=>k.classList.toggle('dream', t>.02));
+  // air-quality panel (report: local 11.5 -> 7.8, background 11.5 -> 10.4)
+  const loc=11.5+(7.8-11.5)*t, bg=11.5+(10.4-11.5)*t;
+  $('aqV').textContent=fmt(P,1);
+  const pos=x=>Math.max(0,Math.min(100,x/30*100))+'%';
+  $('aqM').style.left=pos(P); $('aqG').style.opacity = t>.05 ? '1' : '0';
+  $('aqLb').style.width=(loc/11.5*100)+'%'; $('aqBb').style.width=(bg/11.5*100)+'%';
+  $('aqLv').textContent=fmt(loc,1); $('aqBv').textContent=fmt(bg,1);
+  const cat=$('aqCat'), bad=P>15;
+  cat.textContent = bad ? T[lang].catBad : T[lang].catOk;
+  cat.style.background = bad ? '#fbe3d6' : '#fdf3d0'; cat.style.color = bad ? '#b4461a' : '#8a6a00';
+  pmLocal=loc; pmBg=bg;
 }
 function updateBadge(){ const d=target>0.5; $('badge').classList.toggle('dream',d); $('badgeTxt').textContent = d?T[lang].badge1:T[lang].badge0; }
 
 /* ---------------- story ---------------- */
 const DUR=[6000,9000,13000,10000,12000];   // ~48 s, plus reading time on the pilot
 let step=0, playing=!reduce || kiosk, elapsed=0, free=false, booked=false;
+function setMode(auto){ playing=auto; if(auto) elapsed=0; renderStep(); }
 const sheets={dig:$('shDig'),app:$('shApp'),pilot:$('shPilot')};
 function sheet(name){ Object.entries(sheets).forEach(([k,s])=>{ const on=k===name; s.classList.toggle('open',on); s.setAttribute('aria-hidden',!on); }); }
-function setScenario(d){ target=d?1:0; mapScenario(d); $('bToday').setAttribute('aria-pressed',!d); $('bDream').setAttribute('aria-pressed',d); updateBadge(); }
+function setScenario(d){ if(d && target<0.5) setTimeout(showToast, reduce?0:900); target=d?1:0; mapScenario(d); $('bToday').setAttribute('aria-pressed',!d); $('bDream').setAttribute('aria-pressed',d); updateBadge(); }
 function openStreet(cell){ tapCell=cell||{i:8,j:6}; openTarget=1; }
 function renderStep(){
   const L=T[lang];
   if (free){ $('sK').textContent='★'; $('sH').textContent=L.freeH; $('sP').textContent=L.freeP; }
   else { const s=L.steps[step]; $('sK').textContent=(step+1)+' / 5'; $('sH').textContent=s.h; $('sP').textContent=s.p; }
-  $('bPlay').textContent = free ? L.replay : (playing?L.pause:L.play);
-  $('seg').hidden = !free;
-  $('bPrev').hidden = free; $('bNext').hidden = free;
+  $('bPlay').textContent = L.replay; $('bPlay').hidden = !free;
+  $('seg').hidden = !free; $('modeSeg').hidden = free;
+  $('mAuto').setAttribute('aria-pressed', playing && !free); $('mMan').setAttribute('aria-pressed', !playing || free);
+  $('bPrev').hidden = free || step===0; $('bNext').hidden = free;
+  $('bNext').textContent = step===4 ? L.nextEnd : L.next;
 }
 function goStep(n){
   free=false; step=Math.max(0,Math.min(4,n)); elapsed=0;
@@ -488,15 +576,22 @@ function goStep(n){
 }
 function progress(){
   document.querySelectorAll('.prog i').forEach((el,k)=>{
-    el.style.width = free ? '100%' : k<step ? '100%' : k>step ? '0%' : Math.min(100,elapsed/DUR[step]*100)+'%';
+    el.style.width = free ? '100%' : k<step ? '100%' : k>step ? '0%' : (playing ? Math.min(100,elapsed/DUR[step]*100) : 100)+'%';
   });
 }
 function goFree(){ free=true; playing=false; sheet(null); openTarget=0; selectRoad(null); setScenario(true); if(useMap) map.easeTo({zoom:15,pitch:55,duration:reduce?0:1200}); renderStep(); progress();
   $('maptip').classList.add('show'); setTimeout(()=>$('maptip').classList.remove('show'),4000); }
 
-$('bNext').onclick=()=>{ if(step<4) goStep(step+1); else goFree(); };
-$('bPrev').onclick=()=>goStep(step-1);
-$('bPlay').onclick=()=>{ if(free){ playing=true; goStep(0); return; } playing=!playing; renderStep(); };
+$('bNext').onclick=()=>{ playing=false; if(step<4) goStep(step+1); else goFree(); };
+$('bPrev').onclick=()=>{ playing=false; goStep(step-1); };
+$('bPlay').onclick=()=>{ playing=true; goStep(0); };
+$('mAuto').onclick=()=>{ if(step===4 && elapsed>=DUR[4]) { playing=true; goStep(0); } else setMode(true); };
+$('mMan').onclick=()=>setMode(false);
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{ playing=false; goStep(+b.dataset.go); });
+{ let sx=null; const st=$('story');
+  st.addEventListener('touchstart',e=>{ sx=e.touches[0].clientX; },{passive:true});
+  st.addEventListener('touchend',e=>{ if(sx==null||free) return; const dx=e.changedTouches[0].clientX-sx; sx=null;
+    if(Math.abs(dx)>50){ playing=false; if(dx<0){ if(step<4) goStep(step+1); else goFree(); } else goStep(step-1); } },{passive:true}); }
 $('bToday').onclick=()=>{ setScenario(false); sheet(null); openTarget=0; };
 $('bDream').onclick=()=>setScenario(true);
 $('bExplore').onclick=goFree;
@@ -607,6 +702,26 @@ function mapCamera(n,instant){
   } else selectRoad(null);
 }
 
+/* ---------------- PM2.5 particles ---------------- */
+const pc=$('pmc'), px=pc.getContext('2d'); let pmLocal=11.5, pmBg=11.5, PW=0, PH=0;
+const parts=[]; { let s2=7; const r2=()=>{ s2=(s2*16807)%2147483647; return (s2-1)/2147483646; };
+  for(let k=0;k<160;k++) parts.push({x:r2(),y:r2(),r:.8+r2()*1.8,vx:(r2()-.5)*.00004,vy:(r2()-.5)*.00003,local:k<80,o:.35+r2()*.4,rank:(k%80)/80}); }
+function pmSize(){ const r=pc.getBoundingClientRect(), d=Math.min(2,window.devicePixelRatio||1); PW=r.width; PH=r.height; pc.width=PW*d; pc.height=PH*d; px.setTransform(d,0,0,d,0,0); }
+function pmDraw(dt){
+  px.clearRect(0,0,PW,PH);
+  const shownL=pmLocal/11.5, shownB=pmBg/11.5;     // share of particles visible vs baseline
+  for(const q of parts){
+    if(!reduce){ q.x=(q.x+q.vx*dt+1)%1; q.y=(q.y+q.vy*dt+1)%1; }
+    const vis = q.local ? (q.rank<shownL) : (q.rank<shownB);
+    if(!vis) continue;
+    px.globalAlpha=q.o*(q.local?.75:.5);
+    px.fillStyle=q.local?'#7a5638':'#5f7486';
+    px.beginPath(); px.arc(q.x*PW,q.y*PH,q.local?q.r*1.25:q.r,0,7); px.fill();
+  }
+  px.globalAlpha=1;
+}
+function showToast(){ const el=$('toast'); el.classList.add('show'); clearTimeout(showToast.h); showToast.h=setTimeout(()=>el.classList.remove('show'),3200); }
+
 /* ---------------- loop ---------------- */
 function loop(ts){
   const dt=Math.min(64, ts-(last||ts)); last=ts; time+=dt;
@@ -616,11 +731,11 @@ function loop(ts){
     elapsed+=dt; progress();
     if (elapsed>=DUR[step]){ if(step<4) goStep(step+1); else if(kiosk) goStep(0); else { playing=false; renderStep(); } }
   }
-  if(!useMap) draw(); kpis();
+  if(!useMap) draw(); kpis(); pmDraw(dt);
   requestAnimationFrame(loop);
 }
-window.addEventListener('resize', size);
-size(); applyLang(); goStep(0); initMap();
+window.addEventListener('resize', ()=>{ size(); pmSize(); });
+size(); pmSize(); applyLang(); goStep(0); initMap();
 requestAnimationFrame(loop);
 
 /* offline after first load (GitHub Pages only) */
