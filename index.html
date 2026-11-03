@@ -198,6 +198,7 @@ html.kiosk .lang, html.kiosk .ctrls, html.kiosk .mode{display:none}
       <div class="mix">
         <div class="r"><span data-t="aqLoc">Local sources</span><span class="b"><i id="aqLb" style="background:#9a6b45"></i></span><span class="v" id="aqLv">11.5</span></div>
         <div class="r"><span data-t="aqBg">Background</span><span class="b"><i id="aqBb" style="background:#7d93a6"></i></span><span class="v" id="aqBv">11.5</span></div>
+        <div style="font-size:.56rem;color:var(--muted)"><span style="color:#7a5638">●</span><span style="color:#5f7486">●</span> <span data-t="aqDots">Dots on the map = PM2.5</span></div>
       </div>
     </div>
     <div class="toast" id="toast" aria-live="polite">
@@ -401,7 +402,7 @@ const T = {
   ],
   freeH:"Explore Guro", freeP:"Switch between today and 2035, and tap any street to open it.",
   auto:"Auto", manual:"Manual", back:"‹ Back", next:"Next ›", nextEnd:"Explore ›",
-  aqLab:"PM2.5 · annual mean", aqKr:"Korea 15", aqLoc:"Local sources", aqBg:"Background",
+  aqLab:"PM2.5 · annual mean", aqKr:"Korea 15", aqLoc:"Local sources", aqBg:"Background", aqDots:"Dots on the map = PM2.5",
   catBad:"Above Korea's standard", catOk:"Below Korea's standard", tH:"Dare to Dream vs today", tLoc:"Local PM2.5"
  },
  ko:{
@@ -431,7 +432,7 @@ const T = {
   ],
   freeH:"구로 둘러보기", freeP:"현재와 2035년을 전환하고, 거리를 눌러 열어보세요.",
   auto:"자동", manual:"수동", back:"‹ 이전", next:"다음 ›", nextEnd:"둘러보기 ›",
-  aqLab:"초미세먼지 · 연평균", aqKr:"국내 기준 15", aqLoc:"지역 배출", aqBg:"외부 유입",
+  aqLab:"초미세먼지 · 연평균", aqKr:"국내 기준 15", aqLoc:"지역 배출", aqBg:"외부 유입", aqDots:"지도 위 점 = 초미세먼지",
   catBad:"국내 환경기준 초과", catOk:"국내 환경기준 이내", tH:"Dare to Dream vs 현재", tLoc:"지역 배출 초미세먼지"
  }
 };
@@ -705,18 +706,26 @@ function mapCamera(n,instant){
 /* ---------------- PM2.5 particles ---------------- */
 const pc=$('pmc'), px=pc.getContext('2d'); let pmLocal=11.5, pmBg=11.5, PW=0, PH=0;
 const parts=[]; { let s2=7; const r2=()=>{ s2=(s2*16807)%2147483647; return (s2-1)/2147483646; };
-  for(let k=0;k<160;k++) parts.push({x:r2(),y:r2(),r:.8+r2()*1.8,vx:(r2()-.5)*.00004,vy:(r2()-.5)*.00003,local:k<80,o:.35+r2()*.4,rank:(k%80)/80}); }
+  // dots are proportional to concentration: local sources dominant and visible, background faint
+  for(let k=0;k<300;k++){ const local=k<220; parts.push({x:r2(),y:r2(),r:local?1.3+r2()*1.9:.8+r2()*1.1,vx:(r2()-.5)*.00004,vy:(r2()-.5)*.00003,
+    local,o:local?.55+r2()*.35:.22+r2()*.18,rank:local?k/220:(k-220)/80,a:1,lift:0}); } }
 function pmSize(){ const r=pc.getBoundingClientRect(), d=Math.min(2,window.devicePixelRatio||1); PW=r.width; PH=r.height; pc.width=PW*d; pc.height=PH*d; px.setTransform(d,0,0,d,0,0); }
 function pmDraw(dt){
   px.clearRect(0,0,PW,PH);
-  const shownL=pmLocal/11.5, shownB=pmBg/11.5;     // share of particles visible vs baseline
+  const shownL=pmLocal/11.5, shownB=pmBg/11.5;     // share of dots visible vs today
   for(const q of parts){
     if(!reduce){ q.x=(q.x+q.vx*dt+1)%1; q.y=(q.y+q.vy*dt+1)%1; }
-    const vis = q.local ? (q.rank<shownL) : (q.rank<shownB);
-    if(!vis) continue;
-    px.globalAlpha=q.o*(q.local?.75:.5);
-    px.fillStyle=q.local?'#7a5638':'#5f7486';
-    px.beginPath(); px.arc(q.x*PW,q.y*PH,q.local?q.r*1.25:q.r,0,7); px.fill();
+    const vis = q.rank < (q.local?shownL:shownB);
+    if (reduce) q.a = vis?1:0;
+    else if (vis){ q.a=Math.min(1,q.a+dt/700); if(q.a>=1) q.lift=0; }
+    else q.a=Math.max(0,q.a-dt/1600);
+    if (q.a<=0) continue;
+    const leaving = !vis && q.a<1;
+    if (leaving) q.lift += dt*0.00006;          // removed pollution drifts up and turns green
+    px.globalAlpha=q.o*q.a;
+    px.fillStyle = leaving ? '#3fbf7a' : (q.local?'#7a5638':'#5f7486');
+    const y=((q.y-q.lift)%1+1)%1;
+    px.beginPath(); px.arc(q.x*PW,y*PH,(leaving?q.r*1.4:q.r)*(q.local?1.15:1),0,7); px.fill();
   }
   px.globalAlpha=1;
 }
